@@ -1,19 +1,61 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Hello World!</title>
-  </head>
-  <body>
-    <h1>Hello World!</h1>
-    <!-- All of the Node.js APIs are available in this renderer process. -->
-    We are using Node.js <script>document.write(process.versions.node)</script>,
-    Chromium <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
+<head>
+	<meta charset="UTF-8">
 
-    <script>
-      // You can also require other files to run in this process
-      require('./renderer.js')
-    </script>
-  </body>
+	<link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="node_modules/bootstrap-table/dist/bootstrap-table.min.css">
+	<link rel="stylesheet" href="node_modules/font-awesome/css/font-awesome.min.css"/>
+	<link rel="stylesheet" href="node_modules/jstree/dist/themes/default/style.min.css"/>
+	<link rel="stylesheet" href="assets/css/custom.css"/>
+
+	<link rel="shortcut icon" href="assets/images/favicon.ico" type="image/x-icon"/>
+
+	<link rel="import" href="sections/introduction.html">
+	<link rel="import" href="sections/browser.html">
+	<link rel="import" href="sections/editor.html">
+</head>
+<body>
+
+<nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+	<div class="container">
+		<a class="navbar-brand" href="#">Phenotype Editor</a>
+
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbarNav">
+			<ul class="navbar-nav">
+				<li class="nav-item"><a class="nav-link" id="introduction-nav-item" data-section="introduction" href="#">Introduction</a></li>
+				<li class="nav-item"><a class="nav-link" id="browser-nav-item" data-section="browser" href="#">Ontology Browser</a></li>
+				<li class="nav-item"><a class="nav-link" id="editor-nav-item" data-section="editor" href="#">Editor</a></li>
+			</ul>
+		</div>
+	</div>
+</nav>
+<div class="row" style="height: 56px; width:100%"></div>
+
+
+<div class="container">
+	<main class="content js-content"></main>
+</div>
+
+
+<div style="height:72px"></div>
+<div class="navbar navbar-expand-lg navbar-light bg-light fixed-bottom">
+	<div class="container">
+		<p class="text-muted credit pull-right navbar-text">
+			This App is based on <a href="https://github.com/owlcs/owlapi">OWL API</a>.
+		</p>
+	</div>
+</div>
+
+<script>
+	require('./renderer')
+	require('./assets/imports')
+	require('./assets/nav')
+</script>
+
+</body>
 </html>
