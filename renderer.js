@@ -16,5 +16,3 @@ function showMessage(text, state) {
         + '</div>'
     );
 }
-
-var ontologyId = null;

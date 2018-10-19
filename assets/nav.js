@@ -1,18 +1,33 @@
 const settings = require('electron-settings')
+const remote   = require('electron').remote
+
+settings.set('host', 'http://localhost:8080')
 
 document.body.addEventListener('click', (event) => {
   if (event.target.dataset.section) {
     handleSectionTrigger(event)
+    if (event.target.dataset.section == 'editor') {
+       	if (settings.get('activeOntologyId') == null) activateDefaultSection()
+    }
   } else if (event.target.closest('.clickable-row') && event.target.localName == 'td') {
     settings.set('activeOntologyId', event.target.parentElement.firstElementChild.innerText)
     const section = document.getElementById('editor-nav-item')
     if (section) section.click()
+    document.getElementById('refresh-phenotype-tree-button').click()
   } else if (event.target.id == 'create-ontology-button' && document.getElementById('ontology-id').value != '') {
     settings.set('activeOntologyId', document.getElementById('ontology-id').value)
     const section = document.getElementById('editor-nav-item')
     if (section) section.click()
+    document.getElementById('refresh-phenotype-tree-button').click()
   }
 })
+
+document.getElementById('close-button').addEventListener('click', function (e) {
+	var window = remote.getCurrentWindow();
+    window.close();
+});
+
+$('[data-toggle="tooltip"]').tooltip();
 
 function handleSectionTrigger (event) {
   hideAllSectionsAndDeselectButtons()

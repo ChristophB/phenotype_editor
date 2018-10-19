@@ -1,0 +1,21 @@
+<div id="expression-form-group">
+	<div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+		<label for="expression" class="control-label mr-3">Boolean-Expression*</label>
+
+		<div class="btn-group btn-group-sm mr-2" role="group" aria-label="Expression operators">
+			<input type="button" class="btn btn-secondary operator" value="AND">
+			<input type="button" class="btn btn-secondary operator" value="OR">
+			<input type="button" class="btn btn-secondary operator" value="(">
+			<input type="button" class="btn btn-secondary operator" value=")">
+		</div>
+		<div class="btn-group btn-group-sm" role="group" aria-label="Reset button group">
+			<input type="button" class="btn btn-secondary pull-right" value="Reset" onclick="$('#expression').val(null)">
+		</div>
+	</div>
+	
+	<textarea class="form-control drop phenotype" id="expression" name="expression"
+		placeholder="Phenotype_1 AND (Phenotype_2 OR Phenotype_3)" aria-describedby="expression-help"></textarea>
+	<small id="expression-help" class="form-text text-muted">
+		Drag-and-drop a phenotype from the right site into your expression.
+	</small>
+</div>

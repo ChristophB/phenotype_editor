@@ -1,5 +1,26 @@
 <template class="task-template">
-	<section id="editor-section" class="section js-section d-none">
-		- CONTENT OF EDITOR -
+	<section id="editor-section" class="section js-section">
+		<div class="container">
+			<div class="row">
+				<div class="card col-md-4 h-100">
+					<div class="row mb-2">
+						<button id="refresh-phenotype-tree-button" class="btn btn-default col-md-2">
+							<i class="fa fa-refresh"></i>
+						</button>
+						<input type="text" id="phenotype-tree-search-field" placeholder="Search for phenotype..." class="form-control col-md-10">
+					</div>
+
+					<div id="phenotype-tree" class="h-70"></div>
+				</div>
+
+				<div id="phenotype-form" class="card col-md-8"></div>
+			</div>
+		</div>
+
+		<script type="text/javascript" src="./renderer-process/editor.js"></script>
+
+		<script type="text/javascript">
+			$('section').prepend($('<div>').load(`./sections/editor/delete_phenotype_modal.html`))
+		</script>
 	</section>
 </template>

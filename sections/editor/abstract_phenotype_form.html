@@ -1,0 +1,16 @@
+<form accept-charset="UTF-8">
+	<input type="hidden" name="isPhenotype" value="true">
+	<input type="hidden" name="isRestricted" value="false">
+
+	<div class="form-group">
+		<input type="button" id="submit" class="btn btn-primary" value="Create Abstract Phenotype">
+	</div>
+</form>
+
+<script type="text/javascript">
+	var components = [ 'identifier', 'title', 'synonym', 'category', 'description', 'relations', 'datatype', 'formula', 'ucum', 'is_decimal' ]
+
+	components.reverse().forEach((component) =>
+		$('form').prepend($('<div>').load(`./sections/editor/partial/${component}.html`))
+	)
+</script>

@@ -1,4 +1,4 @@
-$("#ontology-table").on('click-row.bs.table', function (e, row, $element) {
-    ontologyId = row.id;
-
+$('#refresh-ontology-table-button').click(() => {
+	console.log('refreshing data of ontology-table');
+	$('#ontology-table').bootstrapTable('refresh');
 });

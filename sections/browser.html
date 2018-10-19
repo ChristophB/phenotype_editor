@@ -1,7 +1,10 @@
 <template class="task-template">
 	<section id="browser-section" class="section js-section d-none">
+		<div id="ontology-table-toolbar">
+			<button class="btn btn-default" id="refresh-ontology-table-button"><i class="fa fa-refresh"></i></button>
+		</div>
 		<table class="table table-hover" id="ontology-table" data-toggle="table" data-url="http://localhost:8080/phenotype"
-			   data-classes="clickable-row" data-pagination="true">
+			   data-classes="clickable-row" data-pagination="true" data-toolbar="#ontology-table-toolbar">
 			<thead>
 			<tr>
 				<th data-field="id">ID</th>

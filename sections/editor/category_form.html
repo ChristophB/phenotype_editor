@@ -1,0 +1,15 @@
+<form accept-charset="UTF-8">
+	<input type="hidden" name="isPhenotype" value="false">
+
+	<div id="prepend-element" class="form-group">
+		<input type="button" id="submit" class="btn btn-primary" value="Create Category">
+	</div>
+</form>
+
+<script type="text/javascript">
+	var components = [ 'identifier', 'title', 'synonym', 'super_category', 'description', 'relations' ]
+
+	components.reverse().forEach((component) =>
+		$('form').prepend($('<div>').load(`./sections/editor/partial/${component}.html`))
+	)
+</script>
