@@ -5,8 +5,17 @@ $('#refresh-phenotype-tree-button').click(() => {
 	createPhenotypeTree('phenotype-tree', settings.get('host') + '/phenotype/' + settings.get('activeOntologyId') + '/all', true)
 })
 
+function checkIfExists(id) {
+	$.getJSON(`${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/${id}`, function(data) {
+		var identifierField = document.getElementById('identifier-warning')
 
-var awesomplete;
+		if (data == undefined) {
+			identifierField.classList.add('d-none')
+		} else {
+			identifierField.classList.remove('d-none')
+		}
+	})
+}
 
 function toggleValueDefinition() {
 	$('#ucum-form-group, #is-decimal-form-group, #formula-form-group').addClass('d-none');
@@ -27,14 +36,18 @@ function showMessage(text, state) {
 	$('#message').remove();
 	$('body').append(
 		'<div id="message" class="alert alert-' + state + ' fade in">'
-    	+ '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'
-        	+ $('<div>').text(text).html()
-        + '</div>'
-    );
+		+ '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'
+			+ $('<div>').text(text).html()
+		+ '</div>'
+	);
 }
 
 function createPhenotypeTree(id, url, withContext) {
 	$('#' + id).jstree('destroy')
+	$(document).off('dnd_move.vakata')
+	$(document).off('dnd_stop.vakata')
+	$('#phenotype-tree-search-field').off('keyup')
+
 	$('#' + id).jstree({
 		core: {
 			multiple: false,
@@ -47,13 +60,13 @@ function createPhenotypeTree(id, url, withContext) {
 	});
 
 	var timeout = false;
-    $('#phenotype-tree-search-field').keyup(() => {
-    	if (timeout) { clearTimeout(timeout); }
-    	timeout = setTimeout(() => {
-    		var value = $('#phenotype-tree-search-field').val();
-    		$('#' + id).jstree(true).search(value);
-    	}, 250);
-    });
+	$('#phenotype-tree-search-field').keyup(() => {
+		if (timeout) { clearTimeout(timeout); }
+		timeout = setTimeout(() => {
+			var value = $('#phenotype-tree-search-field').val();
+			$('#' + id).jstree(true).search(value);
+		}, 250);
+	});
 
 	$(document).on('dnd_move.vakata', function (e, data) {
 		var target     = $(data.event.target);
@@ -61,17 +74,17 @@ function createPhenotypeTree(id, url, withContext) {
 		var drop       = target.closest('.drop');
 		var jstreeIcon = data.helper.find('.jstree-icon');
 
-        jstreeIcon.removeClass('jstree-ok').addClass('jstree-er');
+		jstreeIcon.removeClass('jstree-ok').addClass('jstree-er');
 
 		if (target.closest('.jstree').length || !drop.length) return; // field with class "drop" outside of jstree
 
 		if ((attributes.type.value === "null" && drop.hasClass('category'))
-		    || (attributes.type.value !== "null" && drop.hasClass('phenotype')
-		        && ((drop[0].id === 'reason-form-drop-area' && attributes.isSinglePhenotype.value == "true")
-			        || (drop[0].id === 'formula' && attributes.isRestricted.value == "false"
-			            && ['numeric', 'calculation', 'composite-boolean'].indexOf(attributes.type.value) != -1)
-			        || (drop[0].id === 'expression')
-			    )
+			|| (attributes.type.value !== "null" && drop.hasClass('phenotype')
+				&& ((drop[0].id === 'reason-form-drop-area' && attributes.isSinglePhenotype.value == "true")
+					|| (drop[0].id === 'formula' && attributes.isRestricted.value == "false"
+						&& ['numeric', 'calculation', 'composite-boolean'].indexOf(attributes.type.value) != -1)
+					|| (drop[0].id === 'expression')
+				)
 			)
 		) jstreeIcon.removeClass('jstree-er').addClass('jstree-ok');
 	}).on('dnd_stop.vakata', function (e, data) {
@@ -86,26 +99,26 @@ function createPhenotypeTree(id, url, withContext) {
 			focusInputEnd(drop);
 		} else if (attributes.type.value !== 'null' && drop.hasClass('phenotype')) {
 			if (drop[0].id === 'reason-form-drop-area' && attributes.isSinglePhenotype.value == 'true') {
-			    var pathname = window.location.pathname;
+				var pathname = window.location.pathname;
 
-			    if (attributes.type.value === 'string' && attributes.isRestricted.value == 'false')
-			        $.ajax({
-			            url: pathname.replace(/\/phenotype.*/i, '') + '/phenotype/' + pathname.replace(/.*phenotype\/(.*)\/.*/i, '$1') + '/' + attributes.id.value + '/restrictions',
-                        dataType: 'text',
-                        contentType: 'application/json; charset=utf-8',
-                        processData: false,
-                        type: 'GET',
-                        success: function(options) { appendFormField(data.element, drop[0], JSON.parse(options)); },
-                        error: function(result) {
-                            var response = JSON.parse(result.responseText);
-                            showMessage(response.message, 'danger');
-                        }
-			        });
-			    else appendFormField(data.element, drop[0]);
+				if (attributes.type.value === 'string' && attributes.isRestricted.value == 'false')
+					$.ajax({
+						url: pathname.replace(/\/phenotype.*/i, '') + '/phenotype/' + pathname.replace(/.*phenotype\/(.*)\/.*/i, '$1') + '/' + attributes.id.value + '/restrictions',
+						dataType: 'text',
+						contentType: 'application/json; charset=utf-8',
+						processData: false,
+						type: 'GET',
+						success: function(options) { appendFormField(data.element, drop[0], JSON.parse(options)); },
+						error: function(result) {
+							var response = JSON.parse(result.responseText);
+							showMessage(response.message, 'danger');
+						}
+					});
+				else appendFormField(data.element, drop[0]);
 			} else if (drop[0].id === 'expression'
-			    || (drop[0].id === 'formula' && attributes.isRestricted.value == "false"
-                    && ['numeric', 'calculation', 'composite-boolean'].indexOf(attributes.type.value) != -1)
-            ) {
+				|| (drop[0].id === 'formula' && attributes.isRestricted.value == "false"
+					&& ['numeric', 'calculation', 'composite-boolean'].indexOf(attributes.type.value) != -1)
+			) {
 				drop.val(drop.val() + ' ' + attributes.id.value + ' ');
 				focusInputEnd(drop);
 			}
@@ -116,32 +129,32 @@ function createPhenotypeTree(id, url, withContext) {
 function appendFormField(element, target, options = null) {
 	var id         = element.attributes.id.value;
 	var type       = element.attributes.type.value;
-    var inputField = '';
+	var inputField = '';
 
-    if (type === "string" && options != null) {
-        inputField
-            = '<input type="hidden" name="" id="'+ id + '_select">'
-            + '<select class="form-control" onchange="$(\'#' + id + '_select\').attr(\'name\', this.value)">'
-                + '<option value=""></option>';
-        for (var name in options)
-            inputField +=  '<option value="' + name + '">' + options[name] + '</option>';
-        inputField += '</select>';
-    } else {
-        if (type === "numeric") type = "number";
-        if (type === "string") type = "text";
+	if (type === "string" && options != null) {
+		inputField
+			= '<input type="hidden" name="" id="'+ id + '_select">'
+			+ '<select class="form-control" onchange="$(\'#' + id + '_select\').attr(\'name\', this.value)">'
+				+ '<option value=""></option>';
+		for (var name in options)
+			inputField +=  '<option value="' + name + '">' + options[name] + '</option>';
+		inputField += '</select>';
+	} else {
+		if (type === "numeric") type = "number";
+		if (type === "string") type = "text";
 
-        if (element.attributes.isRestricted.value === "true") {
-            inputField = '<input type="hidden" name="' + id + '">';
-        } else if (['boolean', 'composite-boolean'].indexOf(type) !== -1) {
-            inputField
-                = '<select class="form-control" name="' + id + '">'
-                    + '<option value="true">True</option>'
-                    + '<option value="false">False</option>'
-                + '</select>';
-        } else {
-            inputField = '<input type="' + type + '" class="form-control" name="' + id + '">';
-        }
-    }
+		if (element.attributes.isRestricted.value === "true") {
+			inputField = '<input type="hidden" name="' + id + '">';
+		} else if (['boolean', 'composite-boolean'].indexOf(type) !== -1) {
+			inputField
+				= '<select class="form-control" name="' + id + '">'
+					+ '<option value="true">True</option>'
+					+ '<option value="false">False</option>'
+				+ '</select>';
+		} else {
+			inputField = '<input type="' + type + '" class="form-control" name="' + id + '">';
+		}
+	}
 
 	var html
 		= '<div class="form-group row generated">'
@@ -200,8 +213,6 @@ function showPhenotypeForm(id, callback) {
 				}
 			});
 		});
-
-
 	})
 }
 
@@ -209,37 +220,21 @@ function sleep(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-/* function clearPhenotypeFormData() {
-	$('#message, .generated').remove();
-	$('div:not(.d-none) form input[type!=checkbox].form-control, div:not(.d-none) form textarea.form-control, div:not(.d-none) form select').val(null);
-	$('div:not(.d-none) form input[type=checkbox]').removeAttr('checked');
-	$('.hidden-language, div:not(.d-none) form #title-languages').val('en');
-	toggleValueDefinition();
-
-    if (document.querySelector('div:not(.d-none) form input.awesomplete#identifier')) {
-        $.getJSON(`${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/all?type=list`, function(data) {
-            var input = document.querySelector('div:not(.d-none) form input.awesomplete#identifier');
-            if (awesomplete != undefined) awesomplete.destroy();
-            awesomplete = new Awesomplete(input, { list: data });
-        });
-    }
-} */
-
 function customMenu(node) {
 	var items = {
-	    inspect: {
-        	label: 'Inspect',
-        	icon: 'fa fa-search',
-        	action: function() {
-        		$.ajax({
-        		    url: `${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/${node.a_attr.id}`,
-        		    datatype: 'text',
-        		    type: 'GET',
-        		    success: function(data) { inspectPhenotype(data); },
-        		    error: function(response) { showMessage(response.responseJSON.message, 'danger'); }
-        		});
-        	}
-        },
+		inspect: {
+			label: 'Inspect',
+			icon: 'fa fa-search',
+			action: function() {
+				$.ajax({
+					url: `${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/${node.a_attr.id}`,
+					datatype: 'text',
+					type: 'GET',
+					success: function(data) { inspectPhenotype(data); },
+					error: function(response) { showMessage(response.responseJSON.message, 'danger'); }
+				});
+			}
+		},
 		showCategoryForm: {
 			label: 'Create Category',
 			icon: 'fa fa-plus text-secondary',
@@ -286,26 +281,26 @@ function customMenu(node) {
 			}
 		},
 		showReasonForm: {
-		    label: 'Show Reason Form',
-		    icon: 'fa fa-comment-o',
-		    action: function() {
-		        window.open('reason-form/' + node.a_attr.id, '_self').focus();
-		    }
+			label: 'Show Reason Form',
+			icon: 'fa fa-comment-o',
+			action: function() {
+				window.open('reason-form/' + node.a_attr.id, '_self').focus();
+			}
 		},
 		delete: {
 			label: 'Delete',
 			icon: 'fa fa-trash-o text-danger',
 			action: function() {
-			    $.ajax({
-			        url: `${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/${node.a_attr.id}/dependents`,
-			        dataType: 'json',
-			        success: function(data) {
-                        $('#deletePhenotypeTable').bootstrapTable('load', data);
-                        $('#deletePhenotypeTable').bootstrapTable('checkAll', true);
-                        $('#deletePhenotypeModal').modal('show');
-                    },
-                    error: function(data) { showMessage(data.responseJSON.message, 'danger'); }
-                });
+				$.ajax({
+					url: `${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/${node.a_attr.id}/dependents`,
+					dataType: 'json',
+					success: function(data) {
+						$('#deletePhenotypeTable').bootstrapTable('load', data);
+						$('#deletePhenotypeTable').bootstrapTable('checkAll', true);
+						$('#deletePhenotypeModal').modal('show');
+					},
+					error: function(data) { showMessage(data.responseJSON.message, 'danger'); }
+				});
 			}
 		}
 	};
@@ -332,28 +327,28 @@ function customMenu(node) {
 }
 
 function deletePhenotypes() {
-    var deletions = [];
-    $('#deletePhenotypeTable').bootstrapTable('getSelections').forEach(function(phenotype) {
-        deletions.push(phenotype.name);
-    });
+	var deletions = [];
+	$('#deletePhenotypeTable').bootstrapTable('getSelections').forEach(function(phenotype) {
+		deletions.push(phenotype.name);
+	});
 
-    $.ajax({
-        url: `${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/delete-phenotypes`,
-        dataType: 'text',
-        contentType: 'application/json',
-        processData: false,
-        type: 'POST',
-        data: JSON.stringify(deletions),
-        success: function(result) {
-            $('#phenotype-tree').jstree('refresh');
-            $('#deletePhenotypeModal').modal('hide');
-            showMessage(result, 'success');
-        },
-        error: function(result) {
-            $('#deletePhenotypeModal').modal('hide');
-            showMessage(result.responseText, 'danger');
-        }
-    });
+	$.ajax({
+		url: `${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/delete-phenotypes`,
+		dataType: 'text',
+		contentType: 'application/json',
+		processData: false,
+		type: 'POST',
+		data: JSON.stringify(deletions),
+		success: function(result) {
+			$('#phenotype-tree').jstree('refresh');
+			$('#deletePhenotypeModal').modal('hide');
+			showMessage(result, 'success');
+		},
+		error: function(result) {
+			$('#deletePhenotypeModal').modal('hide');
+			showMessage(result.responseText, 'danger');
+		}
+	});
 }
 
 function focusInputEnd(input) {
@@ -368,19 +363,19 @@ function inspectIfExists(id) {
 
 function getPhenotypeFormId(data) {
 	if (data.abstractPhenotype === true) {
-    	return '#abstract-phenotype-form'
-    } else if (data.restrictedPhenotype === true) {
-    	switch (getDatatype(data)) {
-    		case 'date':    return '#date-phenotype-form'
-    		case 'string':  return '#string-phenotype-form'
-    		case 'numeric': return '#numeric-phenotype-form'
-    		case 'boolean': return '#boolean-phenotype-form'
-    		case 'composite-boolean': return '#composite-boolean-phenotype-form'
-    		case 'calculation': return '#calculation-phenotype-form'
-    	}
-    } else {
-      	return '#category-form'
-    }
+		return '#abstract-phenotype-form'
+	} else if (data.restrictedPhenotype === true) {
+		switch (getDatatype(data)) {
+			case 'date':    return '#date-phenotype-form'
+			case 'string':  return '#string-phenotype-form'
+			case 'numeric': return '#numeric-phenotype-form'
+			case 'boolean': return '#boolean-phenotype-form'
+			case 'composite-boolean': return '#composite-boolean-phenotype-form'
+			case 'calculation': return '#calculation-phenotype-form'
+		}
+	} else {
+		return '#category-form'
+	}
 }
 
 function inspectPhenotype(data) {
@@ -401,45 +396,45 @@ function inspectPhenotype(data) {
 		$('#identifier').val(data.name)
 
 		var counter = 1;
-        for (var lang in data.allTitles) {
-        	var title = data.allTitles[lang];
+		for (var lang in data.titles) {
+			var title = data.titles[lang];
 
-        	if (counter == 1) {
-        		$('#title-div #title-languages').val(lang);
-                $('#title-div .input-group:not(.d-none)').first().find('input[type=text]#titles').val(title.titleText);
-                if (title.alias != null) $('#title-div .input-group:not(.d-none)').first().find('input[type=text]#aliases').val(title.alias);
-        	} else {
-        		addRow('#title-div');
-        		$('#title-div .generated').last().find('select').val(lang);
-        		$('#title-div .generated').last().find('input[type=text]#titles').val(title.titleText);
-        		if (title.alias != null) $('#title-div .generated').last().find('input[type=text]#aliases').val(title.alias);
-        	}
-        	counter++;
-        }
+			if (counter == 1) {
+				$('#title-div #title-languages').val(lang);
+				$('#title-div .input-group:not(.d-none)').first().find('input[type=text]#titles').val(title.titleText);
+				if (title.alias != null) $('#title-div .input-group:not(.d-none)').first().find('input[type=text]#aliases').val(title.alias);
+			} else {
+				addRow('#title-div');
+				$('#title-div .generated').last().find('select').val(lang);
+				$('#title-div .generated').last().find('input[type=text]#titles').val(title.titleText);
+				if (title.alias != null) $('#title-div .generated').last().find('input[type=text]#aliases').val(title.alias);
+			}
+			counter++;
+		}
 
-        $('#categories').val(data.phenotypeCategories !== undefined ? data.phenotypeCategories.join('; ') : null);
+		$('#categories').val(data.phenotypeCategories !== undefined ? data.phenotypeCategories.join('; ') : null);
 
-        for (var lang in data.labels) {
-        	data.labels[lang].forEach(function(label) {
-        		addRow('#label-div');
-        		$('#label-div .generated').last().find('select').val(lang);
-        		$('#label-div .generated').last().find('input[type=text]').val(label);
-        	});
-        }
-        for (var lang in data.descriptions) {
-        	data.descriptions[lang].forEach(function(description) {
-        		addRow('#description-div');
-                $('#description-div .generated').last().find('select').val(lang);
-                $('#description-div .generated').last().find('textarea').val(description);
-        	});
-        }
-        data.relatedConcepts.forEach(function(relation) {
-           	addRow('#relation-div');
-            $('#relation-div input[type=text].generated').last().val(relation);
-        });
-        addRange(data.phenotypeRange);
+		for (var lang in data.labels) {
+			data.labels[lang].forEach(function(label) {
+				addRow('#label-div');
+				$('#label-div .generated').last().find('select').val(lang);
+				$('#label-div .generated').last().find('input[type=text]').val(label);
+			});
+		}
+		for (var lang in data.descriptions) {
+			data.descriptions[lang].forEach(function(description) {
+				addRow('#description-div');
+				$('#description-div .generated').last().find('select').val(lang);
+				$('#description-div .generated').last().find('textarea').val(description);
+			});
+		}
+		data.relatedConcepts.forEach(function(relation) {
+			addRow('#relation-div');
+			$('#relation-div input[type=text].generated').last().val(relation);
+		});
+		addRange(data.phenotypeRange);
 
-        if (data.score != undefined) $('#score').val(data.score);
+		if (data.score != undefined) $('#score').val(data.score);
 	})
 }
 
@@ -448,9 +443,9 @@ function addRange(range) {
 
 	var asDate = range.dateValue || range.dateValues || range.dateRange;
 
-    var value       = range.stringValue || range.dateValue || range.integerValue || range.doubleValue || range.booleanValue;
-    var values      = range.stringValues || range.dateValues || range.integerValues || range.doubleValues;
-    var rangeValues = range.dateRange || range.integerRange || range.doubleRange;
+	var value       = range.stringValue || range.dateValue || range.integerValue || range.doubleValue || range.booleanValue;
+	var values      = range.stringValues || range.dateValues || range.integerValues || range.doubleValues;
+	var rangeValues = range.dateRange || range.integerRange || range.doubleRange;
 
 	if (value != null) {
 		addEnumFieldWithValue(convertValue(value, asDate));
@@ -464,15 +459,15 @@ function addRange(range) {
 			$('#range-min').val(convertValue(rangeValues.MIN_INCLUSIVE, asDate));
 		} else if (rangeValues.MIN_EXCLUSIVE) {
 			$('#range-min-operator').val('>');
-            $('#range-min').val(convertValue(rangeValues.MIN_EXCLUSIVE, asDate));
+			$('#range-min').val(convertValue(rangeValues.MIN_EXCLUSIVE, asDate));
 		}
 		if (rangeValues.MAX_INCLUSIVE) {
-           	$('#range-max-operator').val('<=');
-           	$('#range-max').val(convertValue(rangeValues.MAX_INCLUSIVE, asDate));
-        } else if (rangeValues.MAX_EXCLUSIVE) {
-            $('#range-max-operator').val('<');
-           	$('#range-max').val(convertValue(rangeValues.MAX_EXCLUSIVE, asDate));
-        }
+			$('#range-max-operator').val('<=');
+			$('#range-max').val(convertValue(rangeValues.MAX_INCLUSIVE, asDate));
+		} else if (rangeValues.MAX_EXCLUSIVE) {
+			$('#range-max-operator').val('<');
+			$('#range-max').val(convertValue(rangeValues.MAX_EXCLUSIVE, asDate));
+		}
 	}
 }
 
@@ -482,21 +477,21 @@ function convertValue(value, asDate) {
 
 function addEnumFieldWithValue(value) {
 	addRow('#enum-form-group');
-    $('#enum-form-group .generated:last input[type=text]').val(value);
+	$('#enum-form-group .generated:last input[type=text]').val(value);
 }
 
 function getDatatype(data) {
 	if (data.abstractBooleanPhenotype === true || data.restrictedBooleanPhenotype === true) {
 		return "composite-boolean";
-    } else if (data.abstractCalculationPhenotype === true || data.restrictedCalculationPhenotype === true) {
-    	return "calculation";
-    } else if (data.datatype == 'XSD_STRING') {
-    	return "string";
-    } else if (data.datatype == 'XSD_DATE_TIME' || data.datatype == 'XSD_LONG') {
-    	return "date";
-    } else if (data.datatype == 'XSD_INTEGER' || data.datatype == 'XSD_DOUBLE') {
-    	return "numeric";
-    } else if (data.datatype == 'XSD_BOOLEAN') {
-    	return "boolean";
-    }
+	} else if (data.abstractCalculationPhenotype === true || data.restrictedCalculationPhenotype === true) {
+		return "calculation";
+	} else if (data.datatype == 'XSD_STRING') {
+		return "string";
+	} else if (data.datatype == 'XSD_DATE_TIME' || data.datatype == 'XSD_LONG') {
+		return "date";
+	} else if (data.datatype == 'XSD_INTEGER' || data.datatype == 'XSD_DOUBLE') {
+		return "numeric";
+	} else if (data.datatype == 'XSD_BOOLEAN') {
+		return "boolean";
+	}
 }
