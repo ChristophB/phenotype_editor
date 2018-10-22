@@ -2,8 +2,6 @@ const settings = require('electron-settings')
 const remote   = require('electron').remote
 const window   = remote.getCurrentWindow()
 
-settings.set('host', 'http://localhost:8080')
-
 document.body.addEventListener('click', (event) => {
   if (event.target.dataset.section) {
 	handleSectionTrigger(event)
@@ -11,18 +9,15 @@ document.body.addEventListener('click', (event) => {
 		if (settings.get('activeOntologyId') == null) activateDefaultSection()
 		document.getElementById('ontology-id-span').innerHTML = settings.get('activeOntologyId')
 	}
+	if (event.target.dataset.section == 'browser') {
+		fillOntologyBrowser()
+	}
   } else if (event.target.closest('.clickable-row') && event.target.localName == 'td') {
 	settings.set('activeOntologyId', event.target.parentElement.firstElementChild.innerText)
-	const section = document.getElementById('editor-nav-item')
-	if (section) section.click()
-	document.getElementById('refresh-phenotype-tree-button').click()
-	document.getElementById('ontology-id-span').innerHTML = settings.get('activeOntologyId')
+	showEditorSection()
   } else if (event.target.id == 'create-ontology-button' && document.getElementById('ontology-id').value != '') {
 	settings.set('activeOntologyId', document.getElementById('ontology-id').value)
-	const section = document.getElementById('editor-nav-item')
-	if (section) section.click()
-	document.getElementById('refresh-phenotype-tree-button').click()
-	document.getElementById('ontology-id-span').innerHTML = settings.get('activeOntologyId')
+	showEditorSection()
   }
 })
 
@@ -64,6 +59,12 @@ function toggleMaxRestoreButtons() {
 	}
 }
 
+function fillOntologyBrowser() {
+	if (settings.get('host')) {
+		document.getElementById('refresh-ontology-table-button').click()
+	}
+}
+
 function handleSectionTrigger (event) {
   hideAllSectionsAndDeselectButtons()
 
@@ -82,6 +83,13 @@ function activateDefaultSection () {
 
 function showMainContent () {
   document.querySelector('.js-content').classList.remove('d-none')
+}
+
+function showEditorSection() {
+	const section = document.getElementById('editor-nav-item')
+	if (section) section.click()
+	document.getElementById('refresh-phenotype-tree-button').click()
+	document.getElementById('ontology-id-span').innerHTML = settings.get('activeOntologyId')
 }
 
 function hideAllSectionsAndDeselectButtons () {

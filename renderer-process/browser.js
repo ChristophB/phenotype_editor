@@ -1,4 +1,13 @@
+const settings = require('electron-settings')
+
 $('#refresh-ontology-table-button').click(() => {
-	console.log('refreshing data of ontology-table');
-	$('#ontology-table').bootstrapTable('refresh');
+	if (settings.get('host')) {
+		$('#ontology-table').bootstrapTable('refresh', { url: settings.get('host') + '/phenotype' });
+	}
 });
+
+(function() {
+	if (settings.get('host')) {
+		$('#ontology-table').bootstrapTable('refresh', { url: settings.get('host') + '/phenotype' });
+	}
+})();
