@@ -10,8 +10,7 @@ function initialize() {
 	loadJs()
 
 	function createWindow () {
-		mainWindow = new BrowserWindow({ width: 800, height: 600, title: app.getName() })
-		// TODO: add { frame: false } and some exit button
+		mainWindow = new BrowserWindow({ width: 1200, height: 900, title: app.getName(), frame: false })
 
 		mainWindow.loadURL(path.join('file://', __dirname, '/index.html'))
 

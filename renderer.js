@@ -11,8 +11,8 @@ function showMessage(text, state) {
 	$('#message').remove();
 	$('body').append(
 		'<div id="message" class="alert alert-' + state + ' fade in">'
-    	+ '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'
-        	+ $('<div>').text(text).html()
-        + '</div>'
-    );
+		+ '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'
+			+ $('<div>').text(text).html()
+		+ '</div>'
+	);
 }

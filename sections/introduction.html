@@ -1,5 +1,83 @@
 <template class="task-template">
 	<section id="introduction-section" class="section js-section d-none">
-		- CONTENT OF INTRODUCTION -
+		<h2>Introduction</h2>
+		<p class="text-justify">
+			We consider a phenotype as an individual (as in
+			<a href="http://www.onto-med.de/ontologies/gfo/">General Formal Ontology</a>, GFO), for
+			example, the weight of a concrete person. Abstract instantiable entities, that are instantiated by phenotypes,
+			are called phenotype classes (e.g., the abstract property ‘body length’ possess individual length values as
+			instances.
+
+			There are single and composite properties (traits), and correspondingly, single and composite phenotypes:
+		</p>
+		<ul>
+			<li>Single phenotype: a single property (e.g., age, weight, height)</li>
+			<li>Composite phenotype: a composite property that consists of single properties (e.g.,
+				<a href="https://en.wikipedia.org/wiki/Body_mass_index">BMI</a>,
+				<a href="https://doi.org/10.1007/BF01709751">SOFA Score</a>) of an organism or its
+				subsystem
+			</li>
+			<li>Boolean phenotype: a Boolean expression based on has_part relations</li>
+			<li>Mathematical phenotype: a calculation rule (e.g., BMI = weight / height²)</li>
+			<li>Furthermore, composite phenotype classes can associate certain conditions with specific predefined
+				values (scores). Such phenotype classes we call score phenotype classes.
+			</li>
+		</ul>
+
+		<p class="text-justify">
+			We distinguish between restricted and non-restricted phenotype classes, depending on whether their extensions
+			(set of instances) are restricted to a certain range of individual phenotypes by defined conditions or all
+			instances are allowed. For example:
+		</p>
+		<ul>
+			<li>Non-restricted: phenotype class “age”, which is instantiated by the ages of all living beings</li>
+			<li>Restricted: phenotype class “young age”, which is instantiated by the ages of the young ones (age below
+				some pleasant value).
+			</li>
+		</ul>
+
+		<h2>Architecture of the Core Ontology of Phenotypes</h2>
+		<p class="text-justify">
+			The Core Ontology of Phenotypes (COP) enables ontologists to model phenotype classes, so that phenotypes can be
+			classified in phenotype classes based on instance data sets (e.g., of a patient). We used the class gfo:Property
+			of the GFO to model properties or traits and we defined the class cop:Phenotype as subclass of gfo:Property
+			(Figure 1 (a)). According to our definitions in Section 1, there are six types of phenotype classes:
+		</p>
+		<ul>
+			<li>non-restricted (NSiP) and restricted (RSiP) single phenotype classes</li>
+			<li>non-restricted (NScP) and restricted (RScP) score phenotype classes</li>
+			<li>non-restricted (NMaP) and restricted (RMaP) mathematical phenotype classes</li>
+		</ul>
+
+		<p class="text-justify">
+			Each subclass of cop:Single_Phenotype, cop:Score_Phenotype and cop:Mathematical_Phenotype is a phenotype class
+			and is instantiated by phenotypes. Direct subclasses are non-restricted, while subclasses of non-restricted
+			phenotype classes are restricted (e.g., age greater than or equal to 20 years: Age_ge_20).
+		</p>
+
+		<div class="card">
+			<div class="row">
+				<div class="col-sm-5">
+					<img src="./assets/images/COP.png" class="img-fluid" alt="Core Ontology of Phenotypes">
+				</div>
+				<div class="col-sm-7">
+					<img src="./assets/images/Example_BSA.png" class="img-fluid"
+						 alt="Example Body Surface Area Ontology">
+				</div>
+			</div>
+		</div>
+
+		<p class="text-justify">
+			Phenotype classes possess various common attributes (e.g., labels, descriptions and links to external concepts).
+			Additional attributes vary depending on the phenotype class. NSiP classes define the datatype and a unit of
+			measure, NMaP classes have a mathematical formula, RSiP and RMaP classes have restrictions and RScP classes have
+			a Boolean expression and an optional score. Logical relations between phenotype classes as well as range
+			restrictions are represented by anonymous equivalent classes or general class axioms based on property
+			restrictions.
+		</p>
+
+		<script type="text/javascript">
+			require('./renderer-process/introduction')
+		</script>
 	</section>
 </template>
