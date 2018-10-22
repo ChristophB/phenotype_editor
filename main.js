@@ -10,7 +10,13 @@ function initialize() {
 	loadJs()
 
 	function createWindow () {
-		mainWindow = new BrowserWindow({ width: 1200, height: 900, title: app.getName(), frame: false })
+		mainWindow = new BrowserWindow({
+			width: 1200, height: 900,
+			minWidth: 1200, minHeight: 900,
+			title: app.getName(),
+			frame: false,
+			icon: path.join(__dirname, 'assets/icons/png/64x64.png')
+		})
 
 		mainWindow.loadURL(path.join('file://', __dirname, '/index.html'))
 
