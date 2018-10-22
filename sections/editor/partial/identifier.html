@@ -7,7 +7,16 @@
 			If this field is left empty, a value will be generated automatically.
 		</small>
 
-		<input type="text" class="form-control awesomplete" id="identifier" name="identifier" placeholder="Some_Unique_Identifier"
-			   onblur="inspectIfExists($('#phenotype-form form input#identifier').val())">
+		<div class="input-group">
+			<input type="text" class="form-control awesomplete" id="identifier" name="identifier"
+				   placeholder="Some_Unique_Identifier"
+				   onblur="checkIfExists($('#phenotype-form form input#identifier').val())">
+			<div id="identifier-warning" class="input-group-append d-none">
+				<span class="input-group-text">
+					<i class="fa fa-exclamation-triangle text-danger"
+					   title="Identifier already exists. Submitting this form will overwrite the existing phenotype."></i>
+				</span>
+			</div>
+		</div>
 	</div>
 </div>
