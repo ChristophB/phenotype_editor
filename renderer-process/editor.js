@@ -5,6 +5,7 @@ $('#refresh-phenotype-tree-button').click(() => {
 	createPhenotypeTree('phenotype-tree', settings.get('host') + '/phenotype/' + settings.get('activeOntologyId') + '/all', true)
 })
 
+// TODO: not working for categories
 function checkIfExists(id) {
 	$.getJSON(`${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/${id}`, function(data) {
 		var identifierField = document.getElementById('identifier-warning')

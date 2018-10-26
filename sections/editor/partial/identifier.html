@@ -2,8 +2,8 @@
 	<label for="identifier" class="control-label col-sm-2">Identifier</label>
 
 	<div class="col-sm-8" id="identifier-div">
-		<small class="form-text text-muted">
-			A <b>unique</b> identifier of the phenotype or category.
+		<small class="form-text text-muted text-justify">
+			A <strong>unique</strong> identifier of the phenotype or category.
 			If this field is left empty, a value will be generated automatically.
 		</small>
 
@@ -13,7 +13,7 @@
 				   onblur="checkIfExists($('#phenotype-form form input#identifier').val())">
 			<div id="identifier-warning" class="input-group-append d-none">
 				<span class="input-group-text">
-					<i class="fa fa-exclamation-triangle text-danger"
+					<i class="fa fa-exclamation-triangle text-warning"
 					   title="Identifier already exists. Submitting this form will overwrite the existing phenotype."></i>
 				</span>
 			</div>
