@@ -15,7 +15,7 @@
 </form>
 
 <script type="text/javascript">
-	var components = [ 'identifier', 'title', 'synonym', 'super_phenotype', 'description', 'relations' ]
+	var components = [ 'identifier', 'main_title', 'title', 'synonym', 'super_phenotype', 'description', 'relations' ]
 
 	components.reverse().forEach((component) =>
 		$('form').prepend($('<div>').load(`./sections/editor/partial/${component}.html`))

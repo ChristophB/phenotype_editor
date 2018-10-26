@@ -6,6 +6,7 @@ window.Bootstrap = require('bootstrap')
 window.JsTree = require('jstree')
 window.BootstrapTable = require('bootstrap-table')
 window.JquerySerializeJson = require('jquery-serializejson')
+document.getElementById('app-version').innerHTML = require('electron').remote.app.getVersion()
 
 function showMessage(text, state) {
 	$('#message').remove();

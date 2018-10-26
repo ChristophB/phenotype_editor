@@ -1,6 +1,9 @@
 const path = require('path')
 const glob = require('glob')
-const {app, BrowserWindow} = require('electron')
+const { app, BrowserWindow } = require('electron')
+const { autoUpdater } = require("electron-updater")
+
+autoUpdater.checkForUpdatesAndNotify()
 
 if (process.mas) app.setName('Electron APIs')
 

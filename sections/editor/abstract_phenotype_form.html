@@ -8,7 +8,7 @@
 </form>
 
 <script type="text/javascript">
-	var components = [ 'identifier', 'title', 'synonym', 'category', 'description', 'relations', 'datatype', 'formula', 'ucum', 'is_decimal' ]
+	var components = [ 'identifier', 'main_title', 'title', 'synonym', 'category', 'description', 'relations', 'datatype', 'formula', 'ucum', 'is_decimal' ]
 
 	components.reverse().forEach((component) =>
 		$('form').prepend($('<div>').load(`./sections/editor/partial/${component}.html`))

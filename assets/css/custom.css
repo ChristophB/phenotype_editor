@@ -27,10 +27,10 @@
 .affix {
 	top: 70px; min-width: 262px;
 }
-.form-group label.control-label {
+.form-group label.col-form-label {
 	margin-top: 5px;
 }
-.form-group .checkbox .control-label {
+.form-group .checkbox .col-form-label {
 	margin-top: 0px;
 }
 .form-inline {
