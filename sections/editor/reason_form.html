@@ -1,30 +1,28 @@
-<form id="reason-form" class="hidden" action="" method="post" onSubmit="return false">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-			<div class="panel-title pull-left">
-        		Drag phenotypes from the right side and drop them into this form.
+<form id="reason-form" onSubmit="return false">
+	<input type="hidden" name="identifier" id ="identifier">
+	<div class="card">
+		<div class="card-header">
+			<div class="card-title pull-left">
+				Drag phenotypes from the right side and drop them into this form.
 			</div>
-            <div class="panel-title pull-right">
-                <a id="submit-button" class="btn btn-primary" href="#">
-                	Get Phenotypes
-                </a>
-            </div>
-            <div class="clearfix"></div>
+			<div class="card-title pull-right">
+				<a id="submit-button" class="btn btn-primary" href="#">
+					<i class="fa fa-refresh fa-fw" aria-hidden="true"></i><span class="sr-only">Loading...</span>
+				</a>
+			</div>
+			<div class="clearfix"></div>
 		</div>
-		<div id="reason-form-drop-area" class="panel-body drop phenotype"></div>
+		<div id="reason-form-drop-area" class="card-body drop phenotype"></div>
 	</div>
 </form>
 
 <script type="text/javascript">
 $(document).ready(function() {
   $('form #submit-button').on('click', function() {
-    $('form #submit-button').html(
-      '<i class="fa fa-refresh fa-spin fa-fw" aria-hidden="true"></i>'
-      + '<span class="sr-only">Loading...</span>'
-   	).addClass('disabled');
+	$('#phenotype-form #submit-button i').addClass('fa-spin disabled')
 
     $.ajax({
-      url: '${rootPath}/phenotype/${id}/reason',
+      url: `${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/reason`,
       dataType: 'text',
       contentType: 'application/json; charset=utf-8',
       processData: false,
@@ -33,27 +31,27 @@ $(document).ready(function() {
       success: function(result) {
         showMessage(result, 'success');
         $.ajax({
-          url: '${rootPath}/phenotype/${id}/reason?format=png',
+          url: `${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/reason?format=png`,
           dataType: 'text',
           contentType: 'application/json; charset=utf-8',
           processData: false,
           type: 'POST',
           data: JSON.stringify($('#reason-form').serializeArray()),
           success: function(png) {
-            download('data:image/png;base64,' + png, 'reasoner_report.png', 'image/png');
-            $('form #submit-button').html('Get Phenotypes').removeClass('disabled');
+            require('downloadjs')('data:image/png;base64,' + png, 'reasoner_report.png', 'image/png');
+            $('#phenotype-form #submit-button i').removeClass('fa-spin disabled')
           },
           error: function(result) {
             var response = JSON.parse(result.responseText);
             showMessage(response.message, 'danger');
-            $('form #submit-button').html('Get Phenotypes').removeClass('disabled');
+            $('#phenotype-form #submit-button i').removeClass('fa-spin disabled')
           }
         });
       },
       error: function(result) {
         var response = JSON.parse(result.responseText);
         showMessage(response.message, 'danger');
-        $('form #submit-button').html('Get Phenotypes').removeClass('disabled');
+        $('#phenotype-form #submit-button i').removeClass('fa-spin disabled')
       }
     });
   });

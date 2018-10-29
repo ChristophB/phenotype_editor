@@ -1,7 +1,9 @@
+const FileSaver = require('file-saver')
 const settings = require('electron-settings')
+const log = require('electron-log')
 
 $('#refresh-phenotype-tree-button').click(() => {
-	console.log(`loading ontology ${settings.get('activeOntologyId')} into phenotype-tree`)
+	log.info(`loading ontology ${settings.get('activeOntologyId')} into phenotype-tree`)
 	createPhenotypeTree('phenotype-tree', settings.get('host') + '/phenotype/' + settings.get('activeOntologyId') + '/all', true)
 })
 
@@ -103,7 +105,7 @@ function createPhenotypeTree(id, url, withContext) {
 
 				if (attributes.type.value === 'string' && attributes.isRestricted.value == 'false')
 					$.ajax({
-						url: pathname.replace(/\/phenotype.*/i, '') + '/phenotype/' + pathname.replace(/.*phenotype\/(.*)\/.*/i, '$1') + '/' + attributes.id.value + '/restrictions',
+						url: `${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/${attributes.id.value}/restrictions`,
 						dataType: 'text',
 						contentType: 'application/json; charset=utf-8',
 						processData: false,
@@ -162,7 +164,7 @@ function appendFormField(element, target, options = null) {
 			+ '<div class="col-sm-6">'
 				+ inputField
 			+ '</div>'
-			+ '<a class="btn btn-danger" href="#" onclick="$(this).parent().remove()">'
+			+ '<a class="btn btn-danger h-100" href="#" onclick="$(this).parent().remove()">'
 				+ '<i class="fa fa-times fa-lg"></i>'
 			+ '</a>'
 		+ '</div>';
@@ -270,21 +272,18 @@ function customMenu(node) {
 			label: 'Get Decision Tree As PNG',
 			icon: 'fa fa-file-image-o',
 			action: function() {
-				window.open(`${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/decision-tree?phenotype=${node.a_attr.id}&format=png`, '_blank').focus();
+				FileSaver.saveAs(
+					`${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/decision-tree?phenotype=${node.a_attr.id}&format=png`,
+					node.text + '.png')
 			}
 		},
 		getDecisionTreeGraphml: {
 			label: 'Get Decision Tree As GraphML',
 			icon: 'fa fa-file-text-o',
 			action: function() {
-				window.open(`${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/decision-tree?phenotype=${node.a_attr.id}&format=graphml`, '_blank').focus()
-			}
-		},
-		showReasonForm: {
-			label: 'Show Reason Form',
-			icon: 'fa fa-comment-o',
-			action: function() {
-				window.open('reason-form/' + node.a_attr.id, '_self').focus();
+				FileSaver.saveAs(
+					`${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/decision-tree?phenotype=${node.a_attr.id}&format=graphml`,
+					node.text + '.graphml')
 			}
 		},
 		delete: {
@@ -307,7 +306,6 @@ function customMenu(node) {
 
 	if (!node.a_attr.isPhenotype) {
 		delete items.showRestrictedPhenotypeForm;
-		delete items.showReasonForm;
 		delete items.getDecisionTreeGraphml;
 		delete items.getDecisionTreePng;
 	} else {
