@@ -19,7 +19,8 @@
 <script type="text/javascript">
 $(document).ready(function() {
   $('form #submit-button').on('click', function() {
-	$('#phenotype-form #submit-button i').addClass('fa-spin disabled')
+  	$('#phenotype-form #submit-button').addClass('disabled')
+	$('#phenotype-form #submit-button i').addClass('fa-spin')
 
     $.ajax({
       url: `${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/reason`,
@@ -39,19 +40,22 @@ $(document).ready(function() {
           data: JSON.stringify($('#reason-form').serializeArray()),
           success: function(png) {
             require('downloadjs')('data:image/png;base64,' + png, 'reasoner_report.png', 'image/png');
-            $('#phenotype-form #submit-button i').removeClass('fa-spin disabled')
+            $('#phenotype-form #submit-button i').removeClass('fa-spin')
+            $('#phenotype-form #submit-button').removeClass('disabled')
           },
           error: function(result) {
             var response = JSON.parse(result.responseText);
             showMessage(response.message, 'danger');
-            $('#phenotype-form #submit-button i').removeClass('fa-spin disabled')
+            $('#phenotype-form #submit-button i').removeClass('fa-spin')
+            $('#phenotype-form #submit-button').removeClass('disabled')
           }
         });
       },
       error: function(result) {
         var response = JSON.parse(result.responseText);
         showMessage(response.message, 'danger');
-        $('#phenotype-form #submit-button i').removeClass('fa-spin disabled')
+        $('#phenotype-form #submit-button i').removeClass('fa-spin')
+        $('#phenotype-form #submit-button').removeClass('disabled')
       }
     });
   });
