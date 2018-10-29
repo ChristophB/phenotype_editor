@@ -1,11 +1,14 @@
 const path = require('path')
 const glob = require('glob')
-const { app, BrowserWindow } = require('electron')
-const { autoUpdater } = require("electron-updater")
-
-autoUpdater.checkForUpdatesAndNotify()
+const { app, BrowserWindow, dialog } = require('electron')
+const log = require('electron-log')
+const { autoUpdater } = require('electron-updater')
 
 if (process.mas) app.setName('Electron APIs')
+
+autoUpdater.logger = log;
+autoUpdater.logger.transports.file.level = 'info';
+log.info('App starting...');
 
 let mainWindow = null
 
@@ -23,28 +26,38 @@ function initialize() {
 
 		mainWindow.loadURL(path.join('file://', __dirname, '/index.html'))
 
-	    mainWindow.on('closed', () => {
-            mainWindow = null
-        })
+		mainWindow.on('closed', () => {
+			mainWindow = null
+		})
 	}
 	app.on('ready', createWindow)
 
-    app.on('window-all-closed', () => {
-        if (process.platform !== 'darwin') {
-      	    app.quit()
-        }
-    })
+	app.on('window-all-closed', () => {
+		app.quit()
+	})
 
-    app.on('activate', () => {
-        if (mainWindow === null) {
-            createWindow()
-        }
-    })
+	app.on('activate', () => {
+		if (mainWindow === null) {
+			createWindow()
+		}
+	})
+
+	app.on('ready', () => {
+		autoUpdater.checkForUpdatesAndNotify()
+	})
+
+	function sendStatusToWindow(text, status) {
+		log.info(text);
+		dialog.showMessageBox({ type: status, message: text })
+	}
+	autoUpdater.on('update-downloaded', (info) => {
+		sendStatusToWindow('An update is available. Restart the app to install it.', 'info');
+	});
 }
 
 function loadJs () {
-    const files = glob.sync(path.join(__dirname, 'main-process/**/*.js'))
-    files.forEach((file) => { require(file) })
+	const files = glob.sync(path.join(__dirname, 'main-process/**/*.js'))
+	files.forEach((file) => { require(file) })
 }
 
 initialize()
