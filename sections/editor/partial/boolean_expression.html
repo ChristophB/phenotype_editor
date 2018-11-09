@@ -9,13 +9,13 @@
 			<input type="button" class="btn btn-secondary operator" value=")">
 		</div>
 		<div class="btn-group btn-group-sm" role="group" aria-label="Reset button group">
-			<input type="button" class="btn btn-secondary pull-right" value="Reset" onclick="$('#expression').val(null)">
+			<input type="button" class="btn btn-secondary pull-right" value="Reset" onclick="$('#expression').html(null)">
 		</div>
 	</div>
-	
-	<textarea class="form-control drop phenotype" id="expression" name="expression"
-		placeholder="Phenotype_1 AND (Phenotype_2 OR Phenotype_3)" aria-describedby="expression-help"></textarea>
+
+	<input type="hidden" id="expression-text" name="expression">
+	<div class="form-control drop phenotype" id="expression" aria-describedby="expression-help"></div>
 	<small id="expression-help" class="form-text text-muted">
-		Drag-and-drop a phenotype from the right site into your expression.
+		Drag-and-drop phenotypes from the right site into your expression.
 	</small>
 </div>

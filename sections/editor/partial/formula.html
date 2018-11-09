@@ -1,8 +1,24 @@
 <div id="formula-form-group" class="for-group row d-none">
 	<label for="formula" class="col-form-label col-sm-2">Formula*</label>
+
 	<div class="col-sm-8">
-	    <textarea class="form-control drop phenotype" id="formula" name="formula" aria-describedby="formula-help"
-	        placeholder="(Phenotype_1 + Phenotype_2) / Phenotype_3"></textarea>
-	    <small id="formula-help" class="form-text text-muted">Click on a phenotype on the right site to add it into your formula.</small>
+		<div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+			<div class="btn-group btn-group-sm mr-2" role="group" aria-label="Formula operators">
+				<input type="button" class="btn btn-secondary operator" value="+">
+				<input type="button" class="btn btn-secondary operator" value="-">
+				<input type="button" class="btn btn-secondary operator" value="*">
+				<input type="button" class="btn btn-secondary operator" value="/">
+				<input type="button" class="btn btn-secondary operator" value="(">
+				<input type="button" class="btn btn-secondary operator" value=")">
+				<input type="button" class="btn btn-secondary operator" value="Num">
+			</div>
+			<div class="btn-group btn-group-sm" role="group" aria-label="Reset button group">
+				<input type="button" class="btn btn-secondary pull-right" value="Reset" onclick="$('#formula').html(null)">
+			</div>
+		</div>
+
+		<input type="hidden" id="formula-text" name="formula">
+		<div class="form-control drop phenotype" id="formula" aria-describedby="formula-help"></div>
+		<small id="formula-help" class="form-text text-muted">Drag-and-drop phenotypes from the right site into your formula.</small>
 	</div>
 </div>
