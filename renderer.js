@@ -11,9 +11,9 @@ document.getElementById('app-version').innerHTML = require('electron').remote.ap
 function showMessage(text, state) {
 	$('#message').remove();
 	$('body').append(
-		'<div id="message" class="alert alert-' + state + ' fade in">'
-		+ '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'
-			+ $('<div>').text(text).html()
-		+ '</div>'
+		`<div id="message" class="alert alert-dismissible alert-${state} fade show">
+			<button type="button" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			${$('<div>').text(text).html()}
+		</div>`
 	);
 }
