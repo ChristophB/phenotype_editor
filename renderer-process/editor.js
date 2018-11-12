@@ -104,7 +104,7 @@ function createPhenotypeTree(id, url, withContext) {
 		if (target.closest('.jstree').length || !drop.length) return; // field with class "drop" outside of jstree
 
 		if (attributes.type.value === 'null' && drop.hasClass('category')) {
-			drop.val(drop.val() + ' ' + data.element.id + ';');
+			drop.val(drop.val() + '; ' + data.element.id);
 			focusInputEnd(drop);
 		} else if (attributes.type.value !== 'null' && drop.hasClass('phenotype')) {
 			if (drop[0].id === 'reason-form-drop-area' && attributes.isSinglePhenotype.value == 'true') {
@@ -241,9 +241,10 @@ function showPhenotypeForm(id, callback) {
 				type: 'POST',
 				data: JSON.stringify(form.find('form').first().serializeJSON()),
 				success: function(result) {
+					var response = JSON.parse(result);
 					$('#phenotype-tree').jstree('refresh');
-					inspectIfExists(form.first().find('#identifier').val())
-					showMessage(result, 'success');
+					inspectIfExists(response.id)
+					showMessage(response.message, 'success');
 				},
 				error: function(result) {
 					var response = JSON.parse(result.responseText);
@@ -284,7 +285,7 @@ function customMenu(node) {
 			label: 'Create Phenotype',
 			icon: 'fa fa-plus text-primary',
 			action: function() {
-				showPhenotypeForm('#abstract-phenotype-form', () =>	$('#categories').val(node.a_attr.id))
+				showPhenotypeForm('#abstract-phenotype-form', () =>	$('#super-category').val(node.a_attr.id))
 			}
 		},
 		showRestrictedPhenotypeForm: {
@@ -493,8 +494,8 @@ function inspectPhenotype(data) {
 			}
 			counter++;
 		}
-
-		$('#categories').val(data.phenotypeCategories !== undefined ? data.phenotypeCategories.join('; ') : null);
+console.log(data)
+		$('#super-category').val(data.phenotypeCategories !== undefined ? data.phenotypeCategories.join('; ') : null);
 
 		for (var lang in data.labels) {
 			data.labels[lang].forEach(function(label) {
