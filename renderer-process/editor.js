@@ -421,7 +421,6 @@ function inspectPhenotype(data) {
 
 			toggleValueDefinition();
 		} else if (data.restrictedPhenotype === true) {
-		console.log(data)
 			$('#expression-text').val(data.formula);
 			$('#score').val(data.score);
 			$('#super-phenotype').val(data.abstractPhenotypeName);
