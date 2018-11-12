@@ -58,7 +58,7 @@
 }
 #message {
 	position: fixed;
-	bottom: 10px;
+	top: 90px;
 	left: 30%;
 	right: 30%;
 	z-index: 1020;

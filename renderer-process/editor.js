@@ -8,9 +8,10 @@ $('#refresh-phenotype-tree-button').click(() => {
 })
 
 document.addEventListener('click', (event) => {
-	if (!event.target.classList.contains('phenotype-item')) return;
-
-	event.target.parentNode.removeChild(event.target)
+	if (event.target.localName != 'input' && event.target.parentNode.classList.contains('phenotype-item'))
+		event.target.parentNode.parentNode.removeChild(event.target.parentNode)
+	if (event.target.classList.contains('phenotype-item'))
+		event.target.parentNode.removeChild(event.target)
 })
 
 function checkIfExists(id) {
@@ -127,7 +128,6 @@ function createPhenotypeTree(id, url, withContext) {
 				|| (drop[0].id === 'formula' && attributes.isRestricted.value == "false"
 					&& ['numeric', 'calculation', 'composite-boolean'].indexOf(attributes.type.value) != -1)
 			) {
-				// TODO: transform content of div into json, when form.serializeJSON() is called, use a hidden field for this
 				var label = data.element.innerHTML.replace('jstree-icon', '')
 				drop.append(
 					`<button class="phenotype-item mr-1 mb-1 btn btn-default btn-sm" phenotype-id="${attributes.id.value}">`
@@ -196,7 +196,10 @@ function showPhenotypeForm(id, callback) {
 		$('input[type="button"].operator').click((event) => {
 			if (event.target.value == 'Num') {
 				$('#expression, #formula').append(
-					`<input type="text" style="width:15%" class="phenotype-item btn btn-info mr-1 mb-1 btn-sm">`
+					`<div class="phenotype-item btn btn-info btn-sm mr-1 mb-1 w-25">
+						<input type="text" class="w-75">
+						<i class="fa fa-times"></i>
+					</div>`
 				);
 			} else {
 				$('#expression, #formula').append(
@@ -215,18 +218,19 @@ function showPhenotypeForm(id, callback) {
 		});
 
 		form.find('#submit').click(() => {
-			var id = $('#expression').length ? '#expression' : $('#formula').length ? '#formula' : undefined
+			var fieldId = $('#expression').length ? '#expression' : $('#formula').length ? '#formula' : undefined
 
-			if (id) {
+			if (fieldId) {
 				var text = ''
-				$(id).children().each(function() {
-					if ($(this).attr('phenotype-id')) {
-						text += $(this).attr('phenotype-id') + ' '
+				$(fieldId).children().each(function() {
+					var firstChild = $(this)[0].firstElementChild
+					if (firstChild && firstChild.localName == 'input') {
+						text += firstChild.value
 					} else {
-						text += $(this).val() + ' '
+						text += $(this).attr('phenotype-id') + ' '
 					}
 				})
-				$(id + '-text').val(text)
+				$(fieldId + '-text').val(text)
 			}
 
 			$.ajax({
@@ -238,6 +242,7 @@ function showPhenotypeForm(id, callback) {
 				data: JSON.stringify(form.find('form').first().serializeJSON()),
 				success: function(result) {
 					$('#phenotype-tree').jstree('refresh');
+					inspectIfExists(form.first().find('#identifier').val())
 					showMessage(result, 'success');
 				},
 				error: function(result) {
@@ -387,7 +392,8 @@ function focusInputEnd(input) {
 }
 
 function inspectIfExists(id) {
-	$.getJSON(id, function(data) { if (data != undefined) inspectPhenotype(data); });
+	$.getJSON(`${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/${id}`,
+		function(data) { if (data != undefined) inspectPhenotype(data); });
 }
 
 function getPhenotypeFormId(data) {
@@ -407,6 +413,40 @@ function getPhenotypeFormId(data) {
 	}
 }
 
+function fillFormula(element, data, part, operators) {
+	if (!data.variables.includes(part)) {
+		if (operators.includes(part)) {
+			element.append(
+				`<button class="phenotype-item mr-1 mb-1 btn btn-secondary btn-sm" phenotype-id="${part}">
+					${part}
+				</button>`
+			)
+		} else if (!part == '' && !isNaN(part)) {
+			element.append(
+				`<div class="phenotype-item mr-1 mb-1 btn btn-info btn-sm w-25">
+					<input type="text" class="w-75" value="${part}">
+					<i class="fa fa-times"></i>
+				</div>`
+			)
+		} else {
+			element.append(part)
+		}
+	}
+
+	var nodes = $('#phenotype-tree').jstree(true)._model.data
+	for (var key in nodes) {
+		var node = nodes[key]
+		if (node.a_attr && node.a_attr.id == part) {
+			element.append(
+				`<button class="phenotype-item mr-1 mb-1 btn btn-default btn-sm" phenotype-id="${node.a_attr.id}">
+					<i class="${node.icon}"></i>${node.text}
+				</button>`
+			)
+			break
+		}
+	}
+}
+
 function inspectPhenotype(data) {
 	showPhenotypeForm(getPhenotypeFormId(data), () => {
 		if (data.abstractPhenotype === true) {
@@ -415,9 +455,11 @@ function inspectPhenotype(data) {
 			$('#is-decimal')[0].checked = (data.datatype == 'XSD_DOUBLE');
 			$('#formula-text')[0].value = data.formula;
 
-			data.formula.split(' ').forEach(function(part) {
-				$('#formula').append(part + ' ')
-			})
+			if (data.formula) {
+				data.formula.split(' ').forEach(function(part) {
+					fillFormula($('#formula'), data, part, [ '+', '-', '*', '/', '(', ')' ])
+				})
+			}
 
 			toggleValueDefinition();
 		} else if (data.restrictedPhenotype === true) {
@@ -425,9 +467,11 @@ function inspectPhenotype(data) {
 			$('#score').val(data.score);
 			$('#super-phenotype').val(data.abstractPhenotypeName);
 
-			data.formula.split(' ').forEach(function(part) {
-				$('#expression').append(part + ' ')
-			})
+			if (data.formula) {
+				data.formula.split(' ').forEach(function(part) {
+					fillFormula($('#expression'), data, part, [ 'AND', 'OR', '(', ')' ])
+				})
+			}
 		}
 
 		$('#identifier').val(data.name)
