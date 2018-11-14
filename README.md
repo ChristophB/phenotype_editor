@@ -6,7 +6,7 @@ This application enables the user to connect with an **Ontology Service** and to
 
 - Download the most resent version of this application from the [releases section](https://github.com/ChristophB/phenotype_editor/releases).
 - Start the application.
-- Navigate to the settings tab and set the URL of the Ontology Service, you want to connect to.
+- Navigate to the settings tab and set the URL of the Ontology Service, you want to connect to (e.g., https://health-atlas.de/ontology-service).
 
 ## License
 
