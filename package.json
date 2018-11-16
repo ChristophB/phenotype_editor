@@ -1,6 +1,6 @@
 {
   "name": "phenotype-editor",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "A phenotype ontology browser and editor.",
   "main": "main.js",
   "scripts": {
@@ -22,7 +22,7 @@
   "license": "GPL-3.0",
   "devDependencies": {
     "electron": "^3.0.3",
-    "electron-builder": "^20.28.4"
+    "electron-builder": "^20.36.2"
   },
   "dependencies": {
     "bootstrap-material-design": "^4.1.1",
