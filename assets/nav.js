@@ -68,10 +68,10 @@ function fillOntologyBrowser() {
 function handleSectionTrigger (event) {
   hideAllSectionsAndDeselectButtons()
 
-  event.target.classList.add('active')
+  event.target.parentElement.classList.add('active')
 
   const sectionId = `${event.target.dataset.section}-section`
-  document.getElementById(sectionId).classList.remove('d-none')
+  document.getElementById(sectionId).classList.remove('hide')
 
   const buttonId = event.target.getAttribute('id')
   settings.set('activeSectionButtonId', buttonId)
@@ -82,7 +82,7 @@ function activateDefaultSection () {
 }
 
 function showMainContent () {
-  document.querySelector('.js-content').classList.remove('d-none')
+  document.querySelector('.js-content').classList.remove('hide')
 }
 
 function showEditorSection() {
@@ -95,10 +95,10 @@ function showEditorSection() {
 function hideAllSectionsAndDeselectButtons () {
   const sections = document.querySelectorAll('.js-section')
   Array.prototype.forEach.call(sections, (section) => {
-	section.classList.add('d-none')
+	section.classList.add('hide')
   })
 
-  const buttons = document.querySelectorAll('.nav-link.active')
+  const buttons = document.querySelectorAll('#nav-mobile li.active')
   Array.prototype.forEach.call(buttons, (button) => {
 	button.classList.remove('active')
   })

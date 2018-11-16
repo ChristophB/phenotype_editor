@@ -1,7 +1,7 @@
 <template class="task-template">
-	<section id="introduction-section" class="section js-section d-none">
+	<section id="introduction-section" class="section js-section hide">
 		<h2>Introduction</h2>
-		<p class="text-justify">
+		<p>
 			We consider a phenotype as an individual (as in
 			<a href="http://www.onto-med.de/ontologies/gfo/">General Formal Ontology</a>, GFO), for
 			example, the weight of a concrete person. Abstract instantiable entities, that are instantiated by phenotypes,
@@ -24,7 +24,7 @@
 			</li>
 		</ul>
 
-		<p class="text-justify">
+		<p>
 			We distinguish between restricted and non-restricted phenotype classes, depending on whether their extensions
 			(set of instances) are restricted to a certain range of individual phenotypes by defined conditions or all
 			instances are allowed. For example:
@@ -37,7 +37,7 @@
 		</ul>
 
 		<h2>Architecture of the Core Ontology of Phenotypes</h2>
-		<p class="text-justify">
+		<p>
 			The Core Ontology of Phenotypes (COP) enables ontologists to model phenotype classes, so that phenotypes can be
 			classified in phenotype classes based on instance data sets (e.g., of a patient). We used the class gfo:Property
 			of the GFO to model properties or traits and we defined the class cop:Phenotype as subclass of gfo:Property
@@ -49,7 +49,7 @@
 			<li>non-restricted (NMaP) and restricted (RMaP) mathematical phenotype classes</li>
 		</ul>
 
-		<p class="text-justify">
+		<p>
 			Each subclass of cop:Single_Phenotype, cop:Score_Phenotype and cop:Mathematical_Phenotype is a phenotype class
 			and is instantiated by phenotypes. Direct subclasses are non-restricted, while subclasses of non-restricted
 			phenotype classes are restricted (e.g., age greater than or equal to 20 years: Age_ge_20).
@@ -57,12 +57,11 @@
 
 		<div class="card">
 			<div class="row">
-				<div class="col-sm-5">
-					<img src="./assets/images/COP.png" class="img-fluid" alt="Core Ontology of Phenotypes">
+				<div class="col s4">
+					<img src="./assets/images/COP.png" class="responsive-img materialboxed" alt="Core Ontology of Phenotypes">
 				</div>
-				<div class="col-sm-7">
-					<img src="./assets/images/Example_BSA.png" class="img-fluid"
-						 alt="Example Body Surface Area Ontology">
+				<div class="col s8">
+					<img src="./assets/images/Example_BSA.png" class="responsive-img materialboxed" alt="Example Body Surface Area Ontology">
 				</div>
 			</div>
 		</div>
@@ -78,6 +77,10 @@
 
 		<script type="text/javascript">
 			require('./renderer-process/introduction')
+
+			$(document).ready(function(){
+				$('.materialboxed').materialbox();
+			});
 		</script>
 	</section>
 </template>

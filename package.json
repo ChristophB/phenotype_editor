@@ -4,7 +4,8 @@
   "description": "A phenotype ontology browser and editor.",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
+    "start": "electron --inspect .",
+    "start-win10": "./node_modules/electron/dist/electron.exe .",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
     "pub": "build -p always"
@@ -38,6 +39,7 @@
     "jquery-serializejson": "^2.8.1",
     "jsdom": "^12.2.0",
     "jstree": "^3.3.5",
+    "materialize-css": "^1.0.0",
     "popper.js": "^1.14.4"
   },
   "build": {

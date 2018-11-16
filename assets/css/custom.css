@@ -129,8 +129,9 @@ body {
 }
 #main-navbar {
 	top: 32px;
+}
+#main-navbar nav {
 	width: calc(100% - 2px);
-	left: 1px;
 }
 #titlebar {
 	display: block;
@@ -147,9 +148,8 @@ body {
 	-webkit-app-region: drag;
 }
 #main {
-	height: calc(100% - 88px);
-	margin-top: 88px;
-	padding: 20px;
+	height: calc(100% - 96px);
+	margin-top: 32px;
 	overflow-y: auto;
 }
 #window-controls {
@@ -212,9 +212,14 @@ body {
 #window-title span {
   overflow: hidden;
   text-overflow: ellipsis;
-  line-height: 1.5;
+	line-height: 1.5;
+	margin-left: 1%;
 }
 #expression, #formula {
 	height: auto;
 	min-height: calc(2.25rem + 2px);
+}
+
+#app-version {
+	margin-right: 1%;
 }
