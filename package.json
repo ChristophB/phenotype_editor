@@ -1,6 +1,6 @@
 {
   "name": "phenotype-editor",
-  "version": "0.4.2",
+  "version": "0.4.2-1",
   "description": "A phenotype ontology browser and editor.",
   "main": "main.js",
   "scripts": {
