@@ -30,7 +30,7 @@
     "downloadjs": "^1.4.7",
     "electron-log": "^2.2.17",
     "electron-settings": "^3.2.0",
-    "electron-updater": "^3.1.2",
+    "electron-updater": "^4.0.4",
     "file-saver": "^2.0.0-rc.4",
     "font-awesome": "^4.7.0",
     "glob": "^7.1.3",
