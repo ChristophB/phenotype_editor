@@ -13,6 +13,6 @@ submitButton.addEventListener('click', (event) => {
 		settings.set('host', host)
 
 		hostInput.value = host
-		showMessage('Settings updated!', 'success')
+		showMessage('Settings updated!', 'success', true)
 	}
 })

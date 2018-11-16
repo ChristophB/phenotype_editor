@@ -41,16 +41,6 @@ function addRow(id) {
 	$('form ' + id).append(row);
 }
 
-function showMessage(text, state) {
-	$('#message').remove();
-	$('body').append(
-		'<div id="message" class="alert alert-' + state + ' fade in">'
-		+ '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'
-			+ $('<div>').text(text).html()
-		+ '</div>'
-	);
-}
-
 function createPhenotypeTree(id, url, withContext) {
 	$('#' + id).jstree('destroy')
 	$(document).off('dnd_move.vakata')
@@ -120,7 +110,7 @@ function createPhenotypeTree(id, url, withContext) {
 						success: function(options) { appendFormField(data.element, drop[0], JSON.parse(options)); },
 						error: function(result) {
 							var response = JSON.parse(result.responseText);
-							showMessage(response.message, 'danger');
+							showMessage(response.message, 'danger', true);
 						}
 					});
 				else appendFormField(data.element, drop[0]);
@@ -244,11 +234,11 @@ function showPhenotypeForm(id, callback) {
 					var response = JSON.parse(result);
 					$('#phenotype-tree').jstree('refresh');
 					inspectIfExists(response.id)
-					showMessage(response.message, 'success');
+					showMessage(response.message, 'success', true);
 				},
 				error: function(result) {
 					var response = JSON.parse(result.responseText);
-					showMessage(response.message, 'danger');
+					showMessage(response.message, 'danger', true);
 				}
 			});
 		});
@@ -270,7 +260,7 @@ function customMenu(node) {
 					datatype: 'text',
 					type: 'GET',
 					success: function(data) { inspectPhenotype(data); },
-					error: function(response) { showMessage(response.responseJSON.message, 'danger'); }
+					error: function(response) { showMessage(response.responseJSON.message, 'danger', true); }
 				});
 			}
 		},
@@ -335,7 +325,7 @@ function customMenu(node) {
 						$('#deletePhenotypeTable').bootstrapTable('checkAll', true);
 						$('#deletePhenotypeModal').modal('show');
 					},
-					error: function(data) { showMessage(data.responseJSON.message, 'danger'); }
+					error: function(data) { showMessage(data.responseJSON.message, 'danger', true); }
 				});
 			}
 		}
@@ -494,26 +484,46 @@ function inspectPhenotype(data) {
 			}
 			counter++;
 		}
-console.log(data)
+
 		$('#super-category').val(data.phenotypeCategories !== undefined ? data.phenotypeCategories.join('; ') : null);
 
+		var counter = 1
 		for (var lang in data.labels) {
 			data.labels[lang].forEach(function(label) {
-				addRow('#label-div');
-				$('#label-div .generated').last().find('select').val(lang);
-				$('#label-div .generated').last().find('input[type=text]').val(label);
+				if (counter == 1) {
+					$('#synonym-div #synonym-languages').val(lang);
+					$('#synonym-div #synonyms').val(label);
+				} else {
+					addRow('#synonym-div');
+					$('#synonym-div .generated').last().find('select').val(lang);
+					$('#synonym-div .generated').last().find('input[type=text]').val(label);
+				}
+				counter++
 			});
 		}
+		var counter = 1;
 		for (var lang in data.descriptions) {
 			data.descriptions[lang].forEach(function(description) {
-				addRow('#description-div');
-				$('#description-div .generated').last().find('select').val(lang);
-				$('#description-div .generated').last().find('textarea').val(description);
+				if (counter == 1) {
+					$('#description-div #description-languages').val(lang)
+					$('#description-div textarea:not(.d-none)').first().val(description)
+				} else {
+					addRow('#description-div');
+					$('#description-div .generated').last().find('select').val(lang);
+					$('#description-div .generated').last().find('textarea').val(description);
+				}
 			});
+			counter++;
 		}
+		var counter = 1
 		data.relatedConcepts.forEach(function(relation) {
-			addRow('#relation-div');
-			$('#relation-div input[type=text].generated').last().val(relation);
+			if (counter == 1) {
+				$('#relation-div #relations').val(relation);
+			} else {
+				addRow('#relation-div');
+				$('#relation-div input[type=text].generated').last().val(relation);
+			}
+			counter++;
 		});
 		addRange(data.phenotypeRange);
 
