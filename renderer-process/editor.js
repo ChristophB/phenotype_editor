@@ -98,8 +98,6 @@ function createPhenotypeTree(id, url, withContext) {
 			focusInputEnd(drop);
 		} else if (attributes.type.value !== 'null' && drop.hasClass('phenotype')) {
 			if (drop[0].id === 'reason-form-drop-area' && attributes.isSinglePhenotype.value == 'true') {
-				var pathname = window.location.pathname;
-
 				if (attributes.type.value === 'string' && attributes.isRestricted.value == 'false')
 					$.ajax({
 						url: `${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/${attributes.id.value}/restrictions`,
@@ -109,8 +107,7 @@ function createPhenotypeTree(id, url, withContext) {
 						type: 'GET',
 						success: function(options) { appendFormField(data.element, drop[0], JSON.parse(options)); },
 						error: function(result) {
-							var response = JSON.parse(result.responseText);
-							showMessage(response.message, 'danger', true);
+							showMessage(result.responseText, 'danger', true);
 						}
 					});
 				else appendFormField(data.element, drop[0]);
@@ -136,13 +133,13 @@ function appendFormField(element, target, options = null) {
 	if (type === "string" && options != null) {
 		inputField
 			= '<input type="hidden" name="" id="'+ id + '_select">'
-			+ '<select class="form-control" onchange="$(\'#' + id + '_select\').attr(\'name\', this.value)">'
+			+ '<select class="form-control" onchange="$(\'#' + id.replace(/\./g, '\\\\.') + '_select\').attr(\'name\', this.value)">'
 				+ '<option value=""></option>';
 		for (var name in options)
 			inputField +=  '<option value="' + name + '">' + options[name] + '</option>';
 		inputField += '</select>';
 	} else {
-		if (type === "numeric") type = "number";
+		if (['numeric', 'integer', 'double'].indexOf(type) !== -1) type = "number";
 		if (type === "string") type = "text";
 
 		if (element.attributes.isRestricted.value === "true") {
@@ -154,13 +151,23 @@ function appendFormField(element, target, options = null) {
 					+ '<option value="false">False</option>'
 				+ '</select>';
 		} else {
-			inputField = '<input type="' + type + '" class="form-control" name="' + id + '">';
+			inputField = '<input type="' + type + '" step="any" class="form-control" name="' + id + '">';
 		}
 	}
 
+	var info = ''
+	if (element.attributes.descriptionMap && Object.keys(element.attributes.descriptionMap).length > 0) {
+		var infoTitle = ''
+
+		Object.keys(element.attributes.descriptionMap).forEach(lang => {
+			infoTitle += `${lang}: ${element.attributes.descriptionMap[lang]}\n`
+		})
+
+		info = `<i class="fa fa-info-circle" title="${infoTitle}"></i>`
+	}
 	var html
 		= '<div class="form-group row generated">'
-			+ '<label for="' + id + '" class="control-label col-sm-4">' + element.text + '</label>'
+			+ `<label for="${id}" class="col-form-label col-sm-4">${element.text} ${info}</label>`
 			+ '<div class="col-sm-6">'
 				+ inputField
 			+ '</div>'
@@ -179,7 +186,7 @@ function showPhenotypeForm(id, callback) {
 
 	form.addClass('d-none')
 	form.load('./sections/editor/' + fileName, async () => {
-		while ($('#identifier').length == 0) { await sleep(100) }
+		while ($('#identifier').length == 0 && $('#reason-form').length == 0) { await sleep(100) }
 		form.removeClass('d-none')
 		if (callback != null) callback()
 
@@ -237,12 +244,36 @@ function showPhenotypeForm(id, callback) {
 					showMessage(response.message, 'success', true);
 				},
 				error: function(result) {
-					var response = JSON.parse(result.responseText);
-					showMessage(response.message, 'danger', true);
+					showMessage(result.responseText, 'danger', true);
 				}
 			});
 		});
 	})
+}
+
+function showReasoningForm(id) {
+	$.ajax({
+		url: `${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/${id}/parts`,
+		datatype: 'text',
+		type: 'GET',
+		success: function(data) {
+			showPhenotypeForm('#reason-form', () => {
+				data.forEach(part => {
+					var element = {
+						text: part.mainTitle,
+						attributes: {
+							id: { value: part.identifier },
+							type: { value: part.datatype },
+							isRestricted: { value: part.isRestricted },
+							descriptionMap: part.descriptionMap
+						}
+					}
+					appendFormField(element, '#reason-form-drop-area', part.selectOptions)
+				})
+			})
+		},
+		error: function(response) { showMessage(response.responseText, 'danger', true); }
+	});
 }
 
 function sleep(ms) {
@@ -260,7 +291,7 @@ function customMenu(node) {
 					datatype: 'text',
 					type: 'GET',
 					success: function(data) { inspectPhenotype(data); },
-					error: function(response) { showMessage(response.responseJSON.message, 'danger', true); }
+					error: function(response) { showMessage(response.responseText, 'danger', true); }
 				});
 			}
 		},
@@ -295,6 +326,11 @@ function customMenu(node) {
 				showPhenotypeForm(form, () => $('#super-phenotype').val(node.a_attr.id))
 			}
 		},
+		showReasoningForm: {
+			label: 'Show Reasoning Form',
+			icon: 'fa fa-comment-o',
+			action: () => showReasoningForm(node.a_attr.id)
+		},
 		getDecisionTreePng: {
 			label: 'Get Decision Tree As PNG',
 			icon: 'fa fa-file-image-o',
@@ -322,30 +358,31 @@ function customMenu(node) {
 					dataType: 'json',
 					success: function(data) {
 						$('#deletePhenotypeTable').bootstrapTable('load', data);
-						$('#deletePhenotypeTable').bootstrapTable('checkAll', true);
+						$('#deletePhenotypeTable').bootstrapTable('checkAll');
 						$('#deletePhenotypeModal').modal('show');
 					},
-					error: function(data) { showMessage(data.responseJSON.message, 'danger', true); }
+					error: function(data) { showMessage(data.responseText, 'danger', true); }
 				});
 			}
 		}
 	};
 
 	if (!node.a_attr.isPhenotype) {
-		delete items.showRestrictedPhenotypeForm;
-		delete items.getDecisionTreeGraphml;
-		delete items.getDecisionTreePng;
+		delete items.showRestrictedPhenotypeForm
+		delete items.getDecisionTreeGraphml
+		delete items.getDecisionTreePng
+		delete items.showReasoningForm
 	} else {
-		delete items.showCategoryForm;
-		delete items.showAbstractPhenotypeForm;
+		delete items.showCategoryForm
+		delete items.showAbstractPhenotypeForm
 	}
 	if (node.a_attr.isRestricted) {
-		delete items.getDecisionTreePng;
-		delete items.getDecisionTreeGraphml;
+		delete items.getDecisionTreePng
+		delete items.getDecisionTreeGraphml
 	}
 	if (node.a_attr.id === 'Phenotype_Category') {
-		delete items.delete;
-		delete items.inspect;
+		delete items.delete
+		delete items.inspect
 	}
 
 	return items;
