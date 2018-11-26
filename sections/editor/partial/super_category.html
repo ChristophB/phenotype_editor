@@ -1,9 +1,10 @@
 <div class="form-group row">
 	<label for="super-category" class="col-form-label col-sm-3">Super Category</label>
-	<div class="col-sm-4">
-		<input type="text" class="form-control drop category" id="super-category" name="superCategory">
+	<div class="col-sm-9">
+		<small id="super-category-help" class="form-text text-muted">
+			Drag-and-drop categories from the left site into this field.
+		</small>
+		<input type="hidden" id="super-category-text" name="superCategory">
+		<div class="form-control drop category" id="super-category" aria-describedby="super-category-help"></div>
 	</div>
-	<small class="form-text text-muted col-sm-4">
-		Drag-and-drop categories from the left site into this field.
-	</small>
 </div>

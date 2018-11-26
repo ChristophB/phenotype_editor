@@ -94,8 +94,11 @@ function createPhenotypeTree(id, url, withContext) {
 		if (target.closest('.jstree').length || !drop.length) return; // field with class "drop" outside of jstree
 
 		if (attributes.type.value === 'null' && drop.hasClass('category')) {
-			drop.val(drop.val() + '; ' + data.element.id);
-			focusInputEnd(drop);
+			var label = data.element.innerHTML.replace('jstree-icon', '')
+			drop.append(
+				`<button class="text-capitalize phenotype-item mr-1 mb-1 btn btn-default btn-sm" phenotype-id="${attributes.id.value}">`
+					+ label
+				+ '</button>')
 		} else if (attributes.type.value !== 'null' && drop.hasClass('phenotype')) {
 			if (drop[0].id === 'reason-form-drop-area' && attributes.isSinglePhenotype.value == 'true') {
 				if (attributes.type.value === 'string' && attributes.isRestricted.value == 'false')
@@ -200,35 +203,16 @@ function showPhenotypeForm(id, callback) {
 				);
 			} else {
 				$('#expression, #formula').append(
-					`<button class="phenotype-item btn mr-1 mb-1 btn-secondary btn-sm" phenotype-id="${event.target.value}">`
+					`<button class="text-capitalize phenotype-item btn mr-1 mb-1 btn-secondary btn-sm" phenotype-id="${event.target.value}">`
 						+ event.target.value
 					+ '</button>');
 			}
 		});
 
-		$('#expression').change(() => {
-			$('#expression').scrollTop($('#expression')[0].scrollHeight);
-		});
-
-		$('#formula').change(() => {
-			$('#formula').scrollTop($('#formula')[0].scrollHeight);
-		});
-
 		form.find('#submit').click(() => {
-			var fieldId = $('#expression').length ? '#expression' : $('#formula').length ? '#formula' : undefined
-
-			if (fieldId) {
-				var text = ''
-				$(fieldId).children().each(function() {
-					var firstChild = $(this)[0].firstElementChild
-					if (firstChild && firstChild.localName == 'input') {
-						text += firstChild.value
-					} else {
-						text += $(this).attr('phenotype-id') + ' '
-					}
-				})
-				$(fieldId + '-text').val(text)
-			}
+			[ '#expression', '#formula', '#super-category' ].forEach((id) => {
+				if ($(id).length) transferPhenotypesToTextField(id)
+			})
 
 			$.ajax({
 				url: `${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/create`,
@@ -249,6 +233,19 @@ function showPhenotypeForm(id, callback) {
 			});
 		});
 	})
+}
+
+function transferPhenotypesToTextField(id) {
+	var text = ''
+	$(id).children().each(function() {
+		var firstChild = $(this)[0].firstElementChild
+		if (firstChild && firstChild.localName == 'input') {
+			text += firstChild.value
+		} else {
+			text += $(this).attr('phenotype-id') + ' '
+		}
+	})
+	$(id + '-text').val(text)
 }
 
 function showReasoningForm(id) {
@@ -413,12 +410,6 @@ function deletePhenotypes() {
 	});
 }
 
-function focusInputEnd(input) {
-	var length = input.val().length * 2;
-	input.focus();
-	input[0].setSelectionRange(length, length);
-}
-
 function inspectIfExists(id) {
 	$.getJSON(`${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/${id}`,
 		function(data) { if (data != undefined) inspectPhenotype(data); });
@@ -442,10 +433,10 @@ function getPhenotypeFormId(data) {
 }
 
 function fillFormula(element, data, part, operators) {
-	if (!data.variables.includes(part)) {
+	if (data.variables && !data.variables.includes(part)) {
 		if (operators.includes(part)) {
 			element.append(
-				`<button class="phenotype-item mr-1 mb-1 btn btn-secondary btn-sm" phenotype-id="${part}">
+				`<button class="text-capitalize phenotype-item mr-1 mb-1 btn btn-secondary btn-sm" phenotype-id="${part}">
 					${part}
 				</button>`
 			)
@@ -466,7 +457,7 @@ function fillFormula(element, data, part, operators) {
 		var node = nodes[key]
 		if (node.a_attr && node.a_attr.id == part) {
 			element.append(
-				`<button class="phenotype-item mr-1 mb-1 btn btn-default btn-sm" phenotype-id="${node.a_attr.id}">
+				`<button class="text-capitalize phenotype-item mr-1 mb-1 btn btn-default btn-sm" phenotype-id="${node.a_attr.id}">
 					<i class="${node.icon}"></i>${node.text}
 				</button>`
 			)
@@ -522,7 +513,9 @@ function inspectPhenotype(data) {
 			counter++;
 		}
 
-		$('#super-category').val(data.phenotypeCategories !== undefined ? data.phenotypeCategories.join('; ') : null);
+		if (data.phenotypeCategories) {
+			data.phenotypeCategories.forEach((part) => fillFormula($('#super-category'), data, part))
+		}
 
 		var counter = 1
 		for (var lang in data.labels) {

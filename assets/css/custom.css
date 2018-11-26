@@ -208,7 +208,7 @@ body {
   text-overflow: ellipsis;
   line-height: 1.5;
 }
-#expression, #formula {
+#expression, #formula, #super-category {
 	height: auto;
 	min-height: calc(2.25rem + 2px);
 }
