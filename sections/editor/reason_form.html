@@ -1,18 +1,16 @@
-<form id="reason-form" onSubmit="return false">
-	<div class="card">
-		<div class="card-header bg-light pt-1 pb-1">
-			<div class="card-title pull-left mb-0 mt-2">
-				Drag phenotypes from the right side and drop them into this form.
-			</div>
-			<div class="card-title pull-right mb-0">
-				<a id="submit-button" class="btn btn-primary mb-0" href="#">
-					<i class="fa fa-refresh fa-fw" aria-hidden="true"></i><span class="sr-only">Loading...</span>
-				</a>
-			</div>
-			<div class="clearfix"></div>
+<form class="card h-100" id="reason-form" onSubmit="return false">
+	<div class="card-header bg-light pt-1 pb-1">
+		<div class="card-title pull-left mb-0 mt-2">
+			Drag phenotypes from the right side and drop them into this form.
 		</div>
-		<div id="reason-form-drop-area" class="card-body drop phenotype"></div>
+		<div class="card-title pull-right mb-0">
+			<a id="submit-button" class="btn btn-primary mb-0" href="#">
+				<i class="fa fa-refresh fa-fw" aria-hidden="true"></i><span class="sr-only">Loading...</span>
+			</a>
+		</div>
+		<div class="clearfix"></div>
 	</div>
+	<div id="reason-form-drop-area" class="card-body drop phenotype"></div>
 </form>
 
 <script type="text/javascript">

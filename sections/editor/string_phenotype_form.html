@@ -1,28 +1,38 @@
-<form accept-charset="UTF-8">
+<form class="card h-100" accept-charset="UTF-8">
 	<input type="hidden" name="isPhenotype" value="true">
 	<input type="hidden" name="isRestricted" value="true">
 	<input type="hidden" name="datatype" value="string">
 
-	<div class="form-group row">
-	    <label class="col-form-label col-sm-2">Restriction*</label>
-    	<div class="col-sm-10" id="datatype-specification"></div>
+	<div class="card-header"></div>
+	<div class="card-body">
+		<div class="form-group row">
+			<label class="col-form-label col-sm-3">Restriction*</label>
+			<div class="col-sm-9" id="datatype-specification"></div>
+		</div>
 	</div>
 
-	<div class="form-group">
-		<input type="button" id="submit" class="btn btn-primary" value="Save Restricted String Phenotype">
+	<div class="card-footer">
+		<div class="form-group">
+			<input type="button" id="submit" class="btn btn-primary" value="Save Restricted String Phenotype">
+		</div>
 	</div>
 </form>
 
 <script type="text/javascript">
-	var components = [ 'identifier', 'main_title', 'title', 'synonym', 'super_phenotype', 'description', 'relations' ]
+	var components = {
+		'header': [ 'identifier', 'main_title' ],
+		'body': [ 'title', 'synonym', 'super_phenotype', 'description', 'relations' ]
+	}
 
-	components.reverse().forEach((component) =>
-		$('form').prepend($('<div>').load(`./sections/editor/partial/${component}.html`))
+	Object.keys(components).forEach((section) => 
+		components[section].reverse().forEach((component) =>
+			$('form .card-' + section).prepend($('<div>').load(`./sections/editor/partial/${component}.html`))
+		)
 	)
 
 	components = [ 'enum' ]
 
-	components.reverse().forEach((component) =>
-		$('#datatype-specification').prepend($('<div>').load(`./sections/editor/partial/${component}.html`))
+	components.forEach((component) =>
+		$('#datatype-specification').append($('<div>').load(`./sections/editor/partial/${component}.html`))
 	)
 </script>

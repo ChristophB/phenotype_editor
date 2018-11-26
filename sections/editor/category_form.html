@@ -1,15 +1,25 @@
-<form accept-charset="UTF-8">
+<form class="card h-100" accept-charset="UTF-8">
 	<input type="hidden" name="isPhenotype" value="false">
 
-	<div id="prepend-element" class="form-group">
-		<input type="button" id="submit" class="btn btn-primary" value="Save Category">
+	<div class="card-header"></div>
+	<div class="card-body"></div>
+
+	<div class="card-footer">
+		<div id="prepend-element" class="form-group">
+			<input type="button" id="submit" class="btn btn-primary" value="Save Category">
+		</div>
 	</div>
 </form>
 
 <script type="text/javascript">
-	var components = [ 'identifier', 'main_title', 'title', 'synonym', 'super_category', 'description', 'relations' ]
+	var components = {
+		'header': [ 'identifier', 'main_title' ],
+		'body': [ 'title', 'synonym', 'super_category', 'description', 'relations' ]
+	}
 
-	components.reverse().forEach((component) =>
-		$('form').prepend($('<div>').load(`./sections/editor/partial/${component}.html`))
+	Object.keys(components).forEach((section) => 
+		components[section].forEach((component) =>
+			$('form .card-' + section).append($('<div>').load(`./sections/editor/partial/${component}.html`))
+		)
 	)
 </script>
