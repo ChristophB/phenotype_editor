@@ -1,28 +1,28 @@
 <div id="range-form-group">
 	<label class="col-form-label">By Range</label>
 	<div class="row">
-		<div class="col-sm-1 pr-0">
-			<select class="form-control operator-select pl-0 pr-0" id="range-min-operator" name="rangeMinOperator">
-				<option value="&gt;=">&ge;</option>
-				<option value="&gt;">&gt;</option>
-			</select>
-		</div>
-		<div class="col-sm-3 pl-0">
+		<div class="input-group col-sm-6">
+			<div class="input-group-addon">
+				<select class="custom-select operator-select" id="range-min-operator" name="rangeMinOperator">
+					<option value="&gt;=">&ge;</option>
+					<option value="&gt;">&gt;</option>
+				</select>
+			</div>
 			<input type="text" class="form-control" id="range-min" name="rangeMin" placeholder="Min">
 		</div>
-			
-		<div class="col-sm-1 pr-0">
-			<select class="form-control operator-select pl-0 pr-0" id="range-max-operator" name="rangeMaxOperator">
-				<option value="&lt;=">&le;</option>
-				<option value="&lt;">&lt;</option>
-			</select>
-		</div>
-		<div class="col-sm-3 pl-0">
+		
+		<div class="input-group col-sm-6">
+			<div class="input-group-addon">
+				<select class="custom-select operator-select" id="range-max-operator" name="rangeMaxOperator">
+					<option value="&lt;=">&le;</option>
+					<option value="&lt;">&lt;</option>
+				</select>
+			</div>
 			<input type="text" class="form-control" id="range-max" name="rangeMax" placeholder="Max">
 		</div>
 	</div>
 	<small class="form-text text-muted">
-    	Specify min and/or max values.<br>
-    	e.g.: &lt;20, &le;34.5 => normal | &le;20 => too low | &gt;34.5 => too high
-    </small>
+		Specify min and/or max values.<br>
+		e.g.: &lt;20, &le;34.5 => normal | &le;20 => too low | &gt;34.5 => too high
+	</small>
 </div>
