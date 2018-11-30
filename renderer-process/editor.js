@@ -401,11 +401,11 @@ function deletePhenotypes() {
 		success: function(result) {
 			$('#phenotype-tree').jstree('refresh');
 			$('#deletePhenotypeModal').modal('hide');
-			showMessage(result, 'success');
+			showMessage(result, 'success', true);
 		},
 		error: function(result) {
 			$('#deletePhenotypeModal').modal('hide');
-			showMessage(result.responseText, 'danger');
+			showMessage(result.responseText, 'danger', true);
 		}
 	});
 }
