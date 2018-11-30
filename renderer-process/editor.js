@@ -120,7 +120,7 @@ function createPhenotypeTree(id, url, withContext) {
 			) {
 				var label = data.element.innerHTML.replace('jstree-icon', '')
 				drop.append(
-					`<button class="phenotype-item mr-1 mb-1 btn btn-default btn-sm" phenotype-id="${attributes.id.value}">`
+					`<button class="text-capitalize phenotype-item mr-1 mb-1 btn btn-default btn-sm" phenotype-id="${attributes.id.value}">`
 						+ label
 					+ '</button>')
 			}

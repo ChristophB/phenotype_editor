@@ -238,3 +238,6 @@ body {
 #snackbar-container {
 	bottom: 1px;
 }
+#description-div textarea.form-control {
+	margin-left: 12px;
+}
