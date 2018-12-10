@@ -27,12 +27,12 @@ function checkIfExists(id) {
 }
 
 function toggleValueDefinition() {
-	$('#ucum-form-group, #is-decimal-form-group, #formula-form-group').addClass('d-none');
+	$('#ucum-form-group, #formula-form-group').addClass('d-none')
 
 	if ($('#datatype').val() == 'numeric' || $('#datatype').val() == 'calculation')
-		$('#ucum-form-group, #is-decimal-form-group').removeClass('d-none');
+		$('#ucum-form-group').removeClass('d-none')
 	if ($('#datatype').val() == 'calculation')
-		$('#formula-form-group').removeClass('d-none');
+		$('#formula-form-group').removeClass('d-none')
 }
 
 function addRow(id) {
@@ -471,7 +471,6 @@ function inspectPhenotype(data) {
 		if (data.abstractPhenotype === true) {
 			$('#ucum').val(data.unit);
 			$('#datatype').val(getDatatype(data));
-			$('#is-decimal')[0].checked = (data.datatype == 'XSD_DOUBLE');
 			$('#formula-text')[0].value = data.formula;
 
 			if (data.formula) {
@@ -562,59 +561,58 @@ function inspectPhenotype(data) {
 }
 
 function addRange(range) {
-	if (!range) return;
+	if (!range) return
 
-	var asDate = range.dateValue || range.dateValues || range.dateRange;
+	var asDate = (range.datatype == 'XSD_DATE_TIME' || range.datatype == 'XSD_LONG')
 
-	var value       = range.stringValue || range.dateValue || range.integerValue || range.doubleValue || range.booleanValue;
-	var values      = range.stringValues || range.dateValues || range.integerValues || range.doubleValues;
-	var rangeValues = range.dateRange || range.integerRange || range.doubleRange;
-
-	if (value != null) {
-		addEnumFieldWithValue(convertValue(value, asDate));
-	} else if (values) {
-		values.forEach(function(value) {
-			addEnumFieldWithValue(convertValue(value, asDate));
+	if (range.enumerated) {
+		range.values.forEach(function(value) {
+			addEnumFieldWithValue(convertValue(value, asDate))
 		});
-	} else if (rangeValues) {
-		if (rangeValues.MIN_INCLUSIVE) {
-			$('#range-min-operator').val('>=');
-			$('#range-min').val(convertValue(rangeValues.MIN_INCLUSIVE, asDate));
-		} else if (rangeValues.MIN_EXCLUSIVE) {
-			$('#range-min-operator').val('>');
-			$('#range-min').val(convertValue(rangeValues.MIN_EXCLUSIVE, asDate));
+	} else if (range.limited) {
+		if (range.minFacet == 'MIN_INCLUSIVE') {
+			$('#range-min-operator').val('>=')
+			$('#range-min').val(convertValue(range.minValue, asDate))
+		} else if (range.minFacet == 'MIN_EXCLUSIVE') {
+			$('#range-min-operator').val('>')
+			$('#range-min').val(convertValue(range.minValue, asDate))
 		}
-		if (rangeValues.MAX_INCLUSIVE) {
-			$('#range-max-operator').val('<=');
-			$('#range-max').val(convertValue(rangeValues.MAX_INCLUSIVE, asDate));
-		} else if (rangeValues.MAX_EXCLUSIVE) {
-			$('#range-max-operator').val('<');
-			$('#range-max').val(convertValue(rangeValues.MAX_EXCLUSIVE, asDate));
+		if (range.maxFacet == 'MAX_INCLUSIVE') {
+			$('#range-max-operator').val('<=')
+			$('#range-max').val(convertValue(range.maxValue, asDate))
+		} else if (range.maxFacet == 'MAX_EXCLUSIVE') {
+			$('#range-max-operator').val('<')
+			$('#range-max').val(convertValue(range.maxValue, asDate))
 		}
 	}
 }
 
 function convertValue(value, asDate) {
-	return asDate ? new Date(value).toISOString().substring(0, 10) : value;
+	if (!asDate) return value
+
+	var date = new Date(value)
+	var offset = date.getTimezoneOffset() * 60000
+
+	return new Date(date - offset).toISOString().split('T')[0]
 }
 
 function addEnumFieldWithValue(value) {
-	addRow('#enum-form-group');
-	$('#enum-form-group .generated:last input[type=text]').val(value);
+	addRow('#enum-form-group')
+	$('#enum-form-group .generated:last input[type=text]').val(value)
 }
 
 function getDatatype(data) {
 	if (data.abstractBooleanPhenotype === true || data.restrictedBooleanPhenotype === true) {
-		return "composite-boolean";
+		return "composite-boolean"
 	} else if (data.abstractCalculationPhenotype === true || data.restrictedCalculationPhenotype === true) {
-		return "calculation";
+		return "calculation"
 	} else if (data.datatype == 'XSD_STRING') {
-		return "string";
+		return "string"
 	} else if (data.datatype == 'XSD_DATE_TIME' || data.datatype == 'XSD_LONG') {
-		return "date";
-	} else if (data.datatype == 'XSD_INTEGER' || data.datatype == 'XSD_DOUBLE') {
-		return "numeric";
+		return "date"
+	} else if (data.datatype == 'XSD_DECIMAL') {
+		return "numeric"
 	} else if (data.datatype == 'XSD_BOOLEAN') {
-		return "boolean";
+		return "boolean"
 	}
 }
