@@ -27,11 +27,14 @@ function checkIfExists(id) {
 }
 
 function toggleValueDefinition() {
-	$('#ucum-form-group, #formula-form-group').addClass('d-none')
-
-	if ($('#datatype').val() == 'numeric' || $('#datatype').val() == 'calculation')
+	$('#ucum-form-group, #aggregate-function-form-group, #formula-form-group').addClass('d-none')
+	var datatype = $('#datatype').val()
+	
+	if (datatype == 'numeric')
+		$('#aggregate-function-form-group').removeClass('d-none')
+	if (datatype == 'numeric' || datatype == 'calculation')
 		$('#ucum-form-group').removeClass('d-none')
-	if ($('#datatype').val() == 'calculation')
+	if (datatype == 'calculation')
 		$('#formula-form-group').removeClass('d-none')
 }
 

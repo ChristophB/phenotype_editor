@@ -1,20 +1,16 @@
 <div id="boolean-form-group" class="d-none">
-	<label class="col-form-label">Possible Values</label><br>
+	<label for="boolean-true-label" class="col-form-label">Possible Values</label><br>
 	<small class="form-text text-muted">
 		Define appropriate synonyms for True and False.
 	</small>
 	<div class="row">
 		<label class="col-form-label col-sm-1">True:</label>
 		<div class="col-sm-5">
-			<input type="text" class="form-control" name="booleanTrueLabel" placeholder="Label"
-				<#if phenotype?? & phenotype.booleanTrueLabel??> value="${phenotype.booleanTrueLabel}"</#if>
-			>
+			<input type="text" class="form-control" id="boolean-true-label" name="booleanTrueLabel" placeholder="Label">
 		</div>
 		<label class="col-form-label col-sm-1">False:</label>
 		<div class="col-sm-5">
-			<input type="text" class="form-control" name="booleanFalseLabel" placeholder="Label"
-				<#if phenotype?? & phenotype.booleanFalseLabel??> value="${phenotype.booleanFalseLabel}"</#if>
-			>
+			<input type="text" class="form-control" name="booleanFalseLabel" placeholder="Label">
 		</div>
 	</div>
 </div>
