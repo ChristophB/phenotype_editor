@@ -1,0 +1,17 @@
+<div id="formula-datatype-form-group" class="form-group row d-none">
+	<label for="formula-datatype" class="col-form-label col-sm-3">Formula Datatype*</label>
+	
+	<div class="col-sm-4">
+		<select id="formula-datatype" name="formulaDatatype" class="custom-select" onchange="toggleValueDefinition()">
+			<option value="numeric">Number</option>
+			<option value="date">Date</option>
+			<option value="boolean">Boolean</option>
+		</select>
+	</div>
+
+	<small class="text-muted col-sm-5">
+		A formula can only contain phenotypes of the same datatype (number, date or boolean).
+		When "number" is selected, you may can basic number phenotypes, calculations and boolean expressions.
+	</small>
+
+</div>

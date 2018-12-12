@@ -27,7 +27,7 @@ function checkIfExists(id) {
 }
 
 function toggleValueDefinition() {
-	$('#ucum-form-group, #aggregate-function-form-group, #formula-form-group').addClass('d-none')
+	$('#ucum-form-group, #aggregate-function-form-group, #formula-form-group, #formula-datatype-form-group').addClass('d-none')
 	var datatype = $('#datatype').val()
 	
 	if (datatype == 'numeric')
@@ -35,7 +35,7 @@ function toggleValueDefinition() {
 	if (datatype == 'numeric' || datatype == 'calculation')
 		$('#ucum-form-group').removeClass('d-none')
 	if (datatype == 'calculation')
-		$('#formula-form-group').removeClass('d-none')
+		$('#formula-form-group, #formula-datatype-form-group').removeClass('d-none')
 }
 
 function addRow(id) {
@@ -71,12 +71,13 @@ function createPhenotypeTree(id, url, withContext) {
 	});
 
 	$(document).on('dnd_move.vakata', function (e, data) {
-		var target     = $(data.event.target);
-		var attributes = data.element.attributes;
-		var drop       = target.closest('.drop');
-		var jstreeIcon = data.helper.find('.jstree-icon');
+		var target     = $(data.event.target)
+		var attributes = data.element.attributes
+		var drop       = target.closest('.drop')
+		var jstreeIcon = data.helper.find('.jstree-icon')
+		var formulaDatatype = $('#formula-datatype').val()
 
-		jstreeIcon.removeClass('jstree-ok').addClass('jstree-er');
+		jstreeIcon.removeClass('jstree-ok').addClass('jstree-er')
 
 		if (target.closest('.jstree').length || !drop.length) return; // field with class "drop" outside of jstree
 
@@ -84,15 +85,19 @@ function createPhenotypeTree(id, url, withContext) {
 			|| (attributes.type.value !== "null" && drop.hasClass('phenotype')
 				&& ((drop[0].id === 'reason-form-drop-area' && attributes.isSinglePhenotype.value == "true")
 					|| (drop[0].id === 'formula' && attributes.isRestricted.value == "false"
-						&& ['numeric', 'calculation', 'composite-boolean'].indexOf(attributes.type.value) != -1)
+						&& ['numeric', 'date', 'boolean', 'calculation', 'composite-boolean'].indexOf(attributes.type.value) != -1
+						&& (formulaDatatype == attributes.type.value
+							|| (formulaDatatype == 'numeric' && ['numeric', 'calculation', 'composite-boolean'].indexOf(attributes.type.value) != -1)))
 					|| (drop[0].id === 'expression')
 				)
 			)
-		) jstreeIcon.removeClass('jstree-er').addClass('jstree-ok');
+		)
+		jstreeIcon.removeClass('jstree-er').addClass('jstree-ok');
 	}).on('dnd_stop.vakata', function (e, data) {
-		var target     = $(data.event.target);
-		var attributes = data.element.attributes;
-		var drop       = target.closest('.drop');
+		var target     = $(data.event.target)
+		var attributes = data.element.attributes
+		var drop       = target.closest('.drop')
+		var formulaDatatype = $('#formula-datatype').val()
 
 		if (target.closest('.jstree').length || !drop.length) return; // field with class "drop" outside of jstree
 
@@ -113,13 +118,15 @@ function createPhenotypeTree(id, url, withContext) {
 						type: 'GET',
 						success: function(options) { appendFormField(data.element, drop[0], JSON.parse(options)); },
 						error: function(result) {
-							showMessage(result.responseText, 'danger', true);
+							showMessage(result.responseText, 'danger', true)
 						}
 					});
 				else appendFormField(data.element, drop[0]);
 			} else if (drop[0].id === 'expression'
 				|| (drop[0].id === 'formula' && attributes.isRestricted.value == "false"
-					&& ['numeric', 'calculation', 'composite-boolean'].indexOf(attributes.type.value) != -1)
+					&& ['numeric', 'date', 'boolean', 'calculation', 'composite-boolean'].indexOf(attributes.type.value) != -1
+					&& (formulaDatatype == attributes.type.value
+						|| (formulaDatatype == 'numeric' && ['numeric', 'calculation', 'composite-boolean'].indexOf(attributes.type.value) != -1)))
 			) {
 				var label = data.element.innerHTML.replace('jstree-icon', '')
 				drop.append(
@@ -391,7 +398,7 @@ function customMenu(node) {
 function deletePhenotypes() {
 	var deletions = [];
 	$('#deletePhenotypeTable').bootstrapTable('getSelections').forEach(function(phenotype) {
-		deletions.push(phenotype.name);
+		deletions.push(phenotype.identifier);
 	});
 
 	$.ajax({
@@ -475,6 +482,7 @@ function inspectPhenotype(data) {
 			$('#ucum').val(data.unit);
 			$('#datatype').val(getDatatype(data));
 			$('#formula-text')[0].value = data.formula;
+			$('#formula-datatype')[0].value = data.formulaDatatype
 
 			if (data.formula) {
 				data.formula.split(' ').forEach(function(part) {
