@@ -399,7 +399,7 @@ function customMenu(node) {
 function deletePhenotypes() {
 	var deletions = [];
 	$('#deletePhenotypeTable').bootstrapTable('getSelections').forEach(function(phenotype) {
-		deletions.push(phenotype.identifier);
+		deletions.push(phenotype.name);
 	});
 
 	$.ajax({
