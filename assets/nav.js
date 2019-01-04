@@ -3,22 +3,22 @@ const remote   = require('electron').remote
 const window   = remote.getCurrentWindow()
 
 document.body.addEventListener('click', (event) => {
-  if (event.target.dataset.section) {
-	handleSectionTrigger(event)
-	if (event.target.dataset.section == 'editor') {
-		if (settings.get('activeOntologyId') == null) activateDefaultSection()
-		document.getElementById('ontology-id-span').innerHTML = settings.get('activeOntologyId')
+	if (event.target.dataset.section) {
+		handleSectionTrigger(event)
+		if (event.target.dataset.section == 'editor') {
+			if (settings.get('activeOntologyId') == null) activateDefaultSection()
+			document.getElementById('ontology-id-span').innerHTML = settings.get('activeOntologyId')
+		}
+		if (event.target.dataset.section == 'browser') {
+			fillOntologyBrowser()
+		}
+	} else if (event.target.closest('.clickable-row') && event.target.localName == 'td' && $(event.target).attr('colspan') != 2) {
+		settings.set('activeOntologyId', event.target.parentElement.firstElementChild.innerText)
+		showEditorSection()
+	} else if (event.target.id == 'create-ontology-button' && document.getElementById('ontology-id').value != '') {
+		settings.set('activeOntologyId', document.getElementById('ontology-id').value)
+		showEditorSection()
 	}
-	if (event.target.dataset.section == 'browser') {
-		fillOntologyBrowser()
-	}
-  } else if (event.target.closest('.clickable-row') && event.target.localName == 'td') {
-	settings.set('activeOntologyId', event.target.parentElement.firstElementChild.innerText)
-	showEditorSection()
-  } else if (event.target.id == 'create-ontology-button' && document.getElementById('ontology-id').value != '') {
-	settings.set('activeOntologyId', document.getElementById('ontology-id').value)
-	showEditorSection()
-  }
 })
 
 document.getElementById('min-button').addEventListener("click", event => {
@@ -66,23 +66,23 @@ function fillOntologyBrowser() {
 }
 
 function handleSectionTrigger (event) {
-  hideAllSectionsAndDeselectButtons()
+	hideAllSectionsAndDeselectButtons()
 
-  event.target.classList.add('active')
+	event.target.classList.add('active')
 
-  const sectionId = `${event.target.dataset.section}-section`
-  document.getElementById(sectionId).classList.remove('d-none')
+	const sectionId = `${event.target.dataset.section}-section`
+	document.getElementById(sectionId).classList.remove('d-none')
 
-  const buttonId = event.target.getAttribute('id')
-  settings.set('activeSectionButtonId', buttonId)
+	const buttonId = event.target.getAttribute('id')
+	settings.set('activeSectionButtonId', buttonId)
 }
 
 function activateDefaultSection () {
-  document.getElementById('introduction-nav-item').click()
+	document.getElementById('introduction-nav-item').click()
 }
 
 function showMainContent () {
-  document.querySelector('.js-content').classList.remove('d-none')
+	document.querySelector('.js-content').classList.remove('d-none')
 }
 
 function showEditorSection() {
@@ -93,22 +93,22 @@ function showEditorSection() {
 }
 
 function hideAllSectionsAndDeselectButtons () {
-  const sections = document.querySelectorAll('.js-section')
-  Array.prototype.forEach.call(sections, (section) => {
+	const sections = document.querySelectorAll('.js-section')
+	Array.prototype.forEach.call(sections, (section) => {
 	section.classList.add('d-none')
-  })
+	})
 
-  const buttons = document.querySelectorAll('.nav-link.active')
-  Array.prototype.forEach.call(buttons, (button) => {
+	const buttons = document.querySelectorAll('.nav-link.active')
+	Array.prototype.forEach.call(buttons, (button) => {
 	button.classList.remove('active')
-  })
+	})
 }
 
 const sectionId = settings.get('activeSectionButtonId')
 if (sectionId) {
-  showMainContent()
-  const section = document.getElementById(sectionId)
-  if (section) section.click()
+	showMainContent()
+	const section = document.getElementById(sectionId)
+	if (section) section.click()
 } else {
-  activateDefaultSection()
+	activateDefaultSection()
 }
