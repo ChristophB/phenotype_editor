@@ -479,10 +479,11 @@ function fillFormula(element, data, part, operators) {
 function inspectPhenotype(data) {
 	showPhenotypeForm(getPhenotypeFormId(data), () => {
 		if (data.abstractPhenotype === true) {
-			$('#ucum').val(data.unit);
-			$('#datatype').val(getDatatype(data));
-			$('#formula-text')[0].value = data.formula;
-			$('#formula-datatype')[0].value = data.formulaDatatype
+			$('#ucum').val(data.unit)
+			$('#datatype').val(getDatatype(data))
+			$('#formula-text').val(data.formula)
+			$('#formula-datatype').val(data.formulaDatatype)
+			$('#aggregate-function').val(data.function)
 
 			if (data.formula) {
 				data.formula.split(' ').forEach(function(part) {
