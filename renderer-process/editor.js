@@ -164,7 +164,7 @@ function appendFormField(element, target, options = null) {
 					+ '<option value="false">False</option>'
 				+ '</select>';
 		} else {
-			inputField = '<input type="' + type + '" step="any" class="form-control" name="' + id + '">';
+			inputField = '<input type="' + type + '" step="any" class="form-control value" name="' + id + '">';
 		}
 	}
 
@@ -180,8 +180,9 @@ function appendFormField(element, target, options = null) {
 	}
 	var html
 		= '<div class="form-group row generated">'
-			+ `<label for="${id}" class="col-form-label col-sm-4">${element.text} ${info}</label>`
-			+ '<div class="col-sm-6">'
+			+ `<label for="${id}" class="col-form-label col-sm-3">${element.text} ${info}</label>`
+			+ '<div class="col-sm-3"><input type="date" class="form-control pt-0 observation-date"></div>'
+			+ '<div class="col-sm-5">'
 				+ inputField
 			+ '</div>'
 			+ '<a class="btn btn-danger h-100" href="#" onclick="$(this).parent().remove()">'
