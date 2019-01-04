@@ -15,6 +15,7 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
+  var reasoningIndex = 1
 
   function populateArray(formId) {
     let array = []
@@ -42,7 +43,7 @@ $(document).ready(function() {
       type: 'POST',
       data: data,
       success: function(result) {
-        showMessage(result, 'success');
+        showMessage(`Reasoning result ${reasoningIndex++}: ${result}`, 'success');
         $.ajax({
           url: `${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/reason?format=png`,
           dataType: 'text',
