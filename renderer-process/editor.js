@@ -1,5 +1,6 @@
-const FileSaver = require('file-saver')
-const log = require('electron-log')
+const { ipcRenderer } = require('electron');
+const { download } = require('electron-dl');
+const log = require('electron-log');
 
 $('#refresh-phenotype-tree-button').click(() => {
 	log.info(`loading ontology ${settings.get('activeOntologyId')} into phenotype-tree`)
@@ -341,20 +342,12 @@ function customMenu(node) {
 		getDecisionTreePng: {
 			label: 'Get Decision Tree As PNG',
 			icon: 'fa fa-file-image-o',
-			action: function() {
-				FileSaver.saveAs(
-					`${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/decision-tree?phenotype=${node.a_attr.id}&format=png`,
-					node.text + '.png')
-			}
+			action: () => downloadDesicionTree(node.a_attr.id, node.text, 'png')
 		},
 		getDecisionTreeGraphml: {
 			label: 'Get Decision Tree As GraphML',
 			icon: 'fa fa-file-text-o',
-			action: function() {
-				FileSaver.saveAs(
-					`${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/decision-tree?phenotype=${node.a_attr.id}&format=graphml`,
-					node.text + '.graphml')
-			}
+			action: () => downloadDesicionTree(node.a_attr.id, node.text, 'graphml')
 		},
 		delete: {
 			label: 'Delete',
@@ -394,6 +387,14 @@ function customMenu(node) {
 
 	return items;
 }
+
+function downloadDesicionTree(id, filename, format = 'png') {
+	ipcRenderer.send('download-btn', {
+		url: `${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/decision-tree?phenotype=${id}&format=${format}`,
+		properties: { filename: filename + '.' + format }
+	})
+}
+
 
 function deletePhenotypes() {
 	var deletions = [];
