@@ -3,6 +3,7 @@ const glob = require('glob')
 const { app, BrowserWindow, dialog } = require('electron')
 const log = require('electron-log')
 const { autoUpdater } = require('electron-updater')
+require('electron-dl')({ saveAs: true, openFolderWhenDone: true });
 
 if (process.mas) app.setName('Electron APIs')
 

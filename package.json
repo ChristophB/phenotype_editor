@@ -28,6 +28,7 @@
     "bootstrap-material-design": "^4.1.1",
     "bootstrap-table": "^1.12.1",
     "downloadjs": "^1.4.7",
+    "electron-dl": "^1.12.0",
     "electron-log": "^2.2.17",
     "electron-settings": "^3.2.0",
     "electron-updater": "^4.0.4",

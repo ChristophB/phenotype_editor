@@ -12,7 +12,7 @@ document.body.addEventListener('click', (event) => {
 		if (event.target.dataset.section == 'browser') {
 			fillOntologyBrowser()
 		}
-	} else if (event.target.closest('.clickable-row') && event.target.localName == 'td' && $(event.target).attr('colspan') != 2) {
+	} else if (event.target.closest('.clickable-row') && event.target.localName == 'td' && $(event.target).attr('colspan') != 3) {
 		settings.set('activeOntologyId', event.target.parentElement.firstElementChild.innerText)
 		showEditorSection()
 	} else if (event.target.id == 'create-ontology-button' && document.getElementById('ontology-id').value != '') {

@@ -1,5 +1,4 @@
 const FileSaver = require('file-saver')
-const settings = require('electron-settings')
 const log = require('electron-log')
 
 $('#refresh-phenotype-tree-button').click(() => {
@@ -81,10 +80,10 @@ function createPhenotypeTree(id, url, withContext) {
 
 		if (target.closest('.jstree').length || !drop.length) return; // field with class "drop" outside of jstree
 
-		if ((attributes.type.value === "null" && drop.hasClass('category'))
-			|| (attributes.type.value !== "null" && drop.hasClass('phenotype')
-				&& ((drop[0].id === 'reason-form-drop-area' && attributes.isSinglePhenotype.value == "true")
-					|| (drop[0].id === 'formula' && attributes.isRestricted.value == "false"
+		if ((attributes.type.value === 'null' && drop.hasClass('category'))
+			|| (attributes.type.value !== 'null' && drop.hasClass('phenotype')
+				&& ((drop[0].id === 'reason-form-drop-area' && attributes.isSinglePhenotype.value == 'true')
+					|| (drop[0].id === 'formula' && attributes.isRestricted.value == 'false'
 						&& ['numeric', 'date', 'boolean', 'calculation', 'composite-boolean'].indexOf(attributes.type.value) != -1
 						&& (formulaDatatype == attributes.type.value
 							|| (formulaDatatype == 'numeric' && ['numeric', 'calculation', 'composite-boolean'].indexOf(attributes.type.value) != -1)))
