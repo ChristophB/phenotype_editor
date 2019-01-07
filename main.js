@@ -3,7 +3,8 @@ const glob = require('glob')
 const { app, BrowserWindow, dialog, ipcMain } = require('electron')
 const log = require('electron-log')
 const { autoUpdater } = require('electron-updater')
-const { download } = require('electron-dl');
+require('electron-dl')({ saveAs: true, openFolderWhenDone: true })
+const { download } = require('electron-dl')
 
 if (process.mas) app.setName('Electron APIs')
 
@@ -32,8 +33,6 @@ function initialize() {
 		})
 
 		ipcMain.on('download-btn', (e, args) => {
-			args.properties.saveAs = true
-			args.properties.openFolderWhenDone = true
 			download(BrowserWindow.getFocusedWindow(), args.url, args.properties)
 		})
 	}
