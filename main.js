@@ -8,6 +8,7 @@ const { download } = require('electron-dl')
 
 if (process.mas) app.setName('Electron APIs')
 
+autoUpdater.autoDownload = false;
 autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = 'info';
 log.info('App starting...');
@@ -49,15 +50,20 @@ function initialize() {
 	})
 
 	app.on('ready', () => {
-		autoUpdater.checkForUpdatesAndNotify()
+		autoUpdater.checkForUpdates()
 	})
 
-	function sendStatusToWindow(text, status) {
-		log.info(text);
-		dialog.showMessageBox({ type: status, message: text })
-	}
-	autoUpdater.on('update-downloaded', (info) => {
-		sendStatusToWindow('An update is available. Restart the app to install it.', 'info');
+	autoUpdater.on('update-available', (info) => {
+		var choice = dialog.showMessageBox(BrowserWindow.getFocusedWindow(), {
+			type: 'question',
+			buttons: [ 'Yes', 'no' ],
+			title: 'Update available',
+			message: 'An update is available. Do you want to download and install it now?'
+		});
+		if (choice === 0) {
+			autoUpdater.downloadUpdate()
+			autoUpdater.quitAndInstall()
+		}
 	});
 }
 
