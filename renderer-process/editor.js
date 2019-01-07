@@ -579,9 +579,13 @@ function addRange(range) {
 	var asDate = (range.datatype == 'XSD_DATE_TIME' || range.datatype == 'XSD_LONG')
 
 	if (range.enumerated) {
-		range.values.forEach(function(value) {
-			addEnumFieldWithValue(convertValue(value, asDate))
-		});
+		if (range.datatype == 'XSD_BOOLEAN') {
+			addEnumFieldWithValue(convertValue(range.value, asDate))
+		} else {
+			range.values.forEach(function(value) {
+				addEnumFieldWithValue(convertValue(value, asDate))
+			});
+		}
 	} else if (range.limited) {
 		if (range.minFacet == 'MIN_INCLUSIVE') {
 			$('#range-min-operator').val('>=')
