@@ -60,11 +60,11 @@ function initialize() {
 			title: 'Update available',
 			message: 'An update is available. Do you want to download and install it now?'
 		});
-		if (choice === 0) {
-			autoUpdater.downloadUpdate()
-			autoUpdater.quitAndInstall()
-		}
+		if (choice === 0) autoUpdater.downloadUpdate()
 	});
+	autoUpdater.on('update-downloaded', (info) => {
+		autoUpdater.quitAndInstall(false, true)
+	})
 }
 
 function loadJs () {
