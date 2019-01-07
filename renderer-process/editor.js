@@ -159,7 +159,7 @@ function appendFormField(element, target, options = null) {
 			inputField = '<input type="hidden" name="' + id + '">';
 		} else if (['boolean', 'composite-boolean'].indexOf(type) !== -1) {
 			inputField
-				= '<select class="form-control" name="' + id + '">'
+				= '<select class="form-control value" name="' + id + '">'
 					+ '<option value="true">True</option>'
 					+ '<option value="false">False</option>'
 				+ '</select>';

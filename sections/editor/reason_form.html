@@ -21,7 +21,7 @@ $(document).ready(function() {
     let array = []
     $(formId + ' .generated').each(function() {
       array.push({
-        name: $('input[name]', this).attr('name'),
+        name: $('input[name], select[name]', this).attr('name'),
         value: $('.value', this).val(),
         observationDate: $('.observation-date', this).val(),
       })
