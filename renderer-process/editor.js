@@ -525,8 +525,8 @@ function inspectPhenotype(data) {
 			counter++;
 		}
 
-		if (data.superCategories) {
-			data.superCategories.forEach((part) => fillFormula($('#super-category'), data, part))
+		if (data.categories) {
+			data.categories.forEach((part) => fillFormula($('#super-category'), data, part))
 		}
 
 		var counter = 1
