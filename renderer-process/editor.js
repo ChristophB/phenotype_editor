@@ -483,7 +483,7 @@ function inspectPhenotype(data) {
 			$('#ucum').val(data.unit)
 			$('#datatype').val(getDatatype(data))
 			$('#formula-text').val(data.formula)
-			$('#formula-datatype').val(data.formulaDatatype)
+			$('#formula-datatype').val(data.datatypeText)
 			$('#aggregate-function').val(data.function)
 
 			if (data.formula) {
