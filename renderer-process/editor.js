@@ -443,7 +443,7 @@ function getPhenotypeFormId(data) {
 	}
 }
 
-function fillFormula(element, data, part, operators) {
+function fillFormula(element, data, part, operators = []) {
 	if (data && data.variables && !data.variables.includes(part)) {
 		if (operators.includes(part)) {
 			element.append(
@@ -526,7 +526,10 @@ function inspectPhenotype(data) {
 		}
 
 		if (data.categories) {
-			data.categories.forEach((part) => fillFormula($('#super-category'), data, part))
+			data.categories.forEach((part) => fillFormula($('#super-category'), undefined, part))
+		}
+		if (data.superCategories) {
+			data.superCategories.forEach((part) => fillFormula($('#super-category'), undefined, part))
 		}
 
 		var counter = 1
