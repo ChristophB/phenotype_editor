@@ -445,10 +445,10 @@ function getPhenotypeFormId(data) {
 
 function fillFormula(element, data, part, operators = []) {
 	if (data && data.variables && !data.variables.includes(part)) {
-		if (operators.includes(part)) {
+		if (operators.includes(part.toUpperCase())) {
 			element.append(
-				`<button class="text-capitalize phenotype-item mr-1 mb-1 btn btn-secondary btn-sm" phenotype-id="${part}">
-					${part}
+				`<button class="text-capitalize phenotype-item mr-1 mb-1 btn btn-secondary btn-sm" phenotype-id="${part.toUpperCase()}">
+					${part.toUpperCase()}
 				</button>`
 			)
 		} else if (!part == '' && !isNaN(part)) {
