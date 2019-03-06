@@ -2,10 +2,21 @@
 	<section id="settings-section" class="section js-section">
 		<form class="form form-inline" role="form" accept-charset="utf-8" onsubmit="return false">
 			<div class="form-group">
-				<label for="host-input" class="col-form-label col-sm-2">Phenotype Host:</label>
-				<input type="text" id="host-input" name="host" class="form-control col-sm-5" placeholder="http://localhost:8080" required>
+				<label for="host-input" class="col-form-label col-2">Phenotype Host:</label>
+				<input type="text" id="host-input" name="host" class="form-control col-5" placeholder="http://localhost:8080" required>
+			</div>
 
-				<input type="submit" id="settings-submit" class="btn btn-primary" value="Save">
+			<div class="form-group">
+				<label for="fhir-server-input" class="col-form-label col-2" title="The address of the server where FHIR queries will be send to.">
+					FHIR-Server&nbsp;<i class="fas fa-info-circle"></i>:
+				</label>
+				<input type="text" id="fhir-server-input" name="fhir-server" class="form-control col-5" placeholder="http://localhost/fhir">
+			</div>
+
+			<div class="form-group">
+				<div class="col-7">
+					<input type="submit" id="settings-submit" class="btn btn-primary float-right" value="Save">
+				</div>
 			</div>
 		</form>
 

@@ -176,7 +176,7 @@ function appendFormField(element, target, options = null) {
 			infoTitle += `${lang}: ${element.attributes.descriptionMap[lang]}\n`
 		})
 
-		info = `<i class="fa fa-info-circle" title="${infoTitle}"></i>`
+		info = `<i class="fas fa-info-circle" title="${infoTitle}"></i>`
 	}
 	var html
 		= '<div class="form-group row generated">'
@@ -186,7 +186,7 @@ function appendFormField(element, target, options = null) {
 				+ inputField
 			+ '</div>'
 			+ '<a class="btn btn-danger h-100" href="#" onclick="$(this).parent().remove()">'
-				+ '<i class="fa fa-times fa-lg"></i>'
+				+ '<i class="fas fa-times fa-lg"></i>'
 			+ '</a>'
 		+ '</div>';
 
@@ -200,7 +200,7 @@ function showPhenotypeForm(id, callback) {
 
 	form.addClass('d-none')
 	form.load('./sections/editor/' + fileName, async () => {
-		while ($('#identifier').length == 0 && $('#reason-form').length == 0) { await sleep(100) }
+		while ($('#identifier').length == 0 && $('#reason-form').length == 0 && $('#query-form').length == 0) { await sleep(100) }
 		form.removeClass('d-none')
 		if (callback != null) callback()
 
@@ -209,7 +209,7 @@ function showPhenotypeForm(id, callback) {
 				$('#expression, #formula').append(
 					`<div class="phenotype-item btn btn-info btn-sm mr-1 mb-1 w-25">
 						<input type="text" class="w-75">
-						<i class="fa fa-times"></i>
+						<i class="fas fa-times"></i>
 					</div>`
 				);
 			} else {
@@ -292,7 +292,7 @@ function customMenu(node) {
 	var items = {
 		inspect: {
 			label: 'Inspect',
-			icon: 'fa fa-search',
+			icon: 'fas fa-search',
 			action: function() {
 				$.ajax({
 					url: `${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/${node.a_attr.id}`,
@@ -305,21 +305,21 @@ function customMenu(node) {
 		},
 		showCategoryForm: {
 			label: 'Create Category',
-			icon: 'fa fa-plus text-secondary',
+			icon: 'fas fa-plus text-secondary',
 			action: function() {
 				showPhenotypeForm('#category-form', () => fillFormula($('#super-category'), null, node.a_attr.id))
 			}
 		},
 		showAbstractPhenotypeForm: {
 			label: 'Create Phenotype',
-			icon: 'fa fa-plus text-primary',
+			icon: 'fas fa-plus text-primary',
 			action: function() {
 				showPhenotypeForm('#abstract-phenotype-form', () =>	fillFormula($('#super-category'), null, node.a_attr.id))
 			}
 		},
 		showRestrictedPhenotypeForm: {
 			label: 'Add Restriction',
-			icon: 'fa fa-plus text-warning',
+			icon: 'fas fa-plus text-warning',
 			action: function() {
 				var form
 				switch (node.a_attr.type) {
@@ -336,22 +336,22 @@ function customMenu(node) {
 		},
 		showReasoningForm: {
 			label: 'Show Reasoning Form',
-			icon: 'fa fa-comment-o',
+			icon: 'far fa-comment',
 			action: () => showReasoningForm(node.a_attr.id)
 		},
 		getDecisionTreePng: {
 			label: 'Get Decision Tree As PNG',
-			icon: 'fa fa-file-image-o',
+			icon: 'far fa-file-image',
 			action: () => downloadDesicionTree(node.a_attr.id, node.text, 'png')
 		},
 		getDecisionTreeGraphml: {
 			label: 'Get Decision Tree As GraphML',
-			icon: 'fa fa-file-text-o',
+			icon: 'far fa-file-alt',
 			action: () => downloadDesicionTree(node.a_attr.id, node.text, 'graphml')
 		},
 		delete: {
 			label: 'Delete',
-			icon: 'fa fa-trash-o text-danger',
+			icon: 'far fa-trash-alt text-danger',
 			action: function() {
 				$.ajax({
 					url: `${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/${node.a_attr.id}/dependents`,
@@ -455,7 +455,7 @@ function fillFormula(element, data, part, operators = []) {
 			element.append(
 				`<div class="phenotype-item mr-1 mb-1 btn btn-info btn-sm w-25">
 					<input type="text" class="w-75" value="${part}">
-					<i class="fa fa-times"></i>
+					<i class="fas fa-times"></i>
 				</div>`
 			)
 		} else {
