@@ -203,9 +203,8 @@ function appendReasoningFormField(element, target, options = null) {
 
 function appendQueryFormField(element, target, options = null) {
 	var id   = element.attributes.id.value;
-	var icon = $($(element)[0].firstChild)
+	var icon = $($(element)[0].firstChild).clone()
 	icon.removeClass('jstree-icon')
-	console.log(icon)
 	
 	var info = ''
 	if (element.attributes.descriptionMap && Object.keys(element.attributes.descriptionMap).length > 0) {
@@ -219,11 +218,12 @@ function appendQueryFormField(element, target, options = null) {
 	}
 	var html
 		= '<div class="form-group row generated">'
+			+ `<input type="hidden" name="${id}" id="${id}">`
 			+ `<label for="${id}" class="col-form-label col font-weight-bold">${icon[0].outerHTML} ${element.text} ${info}</label>`
 			+ '<div class="col-3" title="Enable this switch to negate the phenotype.">'
-				+ `<label for="${id}-negate" class="col-form-label">Negation</label>`
+				+ `<label for="${id}-negation" class="col-form-label">Negation</label>`
 				+ '<label class="switch col-form-label">'
-					+ `<input type="checkbox" class="danger" name="${id}-negate" id="${id}-negate">`
+					+ `<input type="checkbox" class="danger" name="${id}-negation" id="${id}-negation">`
 					+ '<span class="slider round"></span>'
 				+ '</label>'
 			+ '</div>'

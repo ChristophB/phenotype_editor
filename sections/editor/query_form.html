@@ -12,6 +12,19 @@
 	</div>
 	<div class="card-title border-bottom px-3 py-2">
 		<div class="form-row">
+			<label for="gender" class="col-form-label col-3">Gender:</label>
+			<div class="col">
+				<select class="form-control" id="gender">
+					<option value="" disabled selected>Select gender...</option>
+					<option value="male">male</option>
+					<option value="female">female</option>
+					<option value="other">other</option>
+					<option value="unknown">unknown</option>
+				</select>
+			</div>
+			<div class="col"></div>
+		</div>
+		<div class="form-row">
 			<label for="min-age" class="col-form-label col-3">Age:</label>
 			<div class="col">
 				<input id="min-age" type="number" steps="any" title="Minimum age" class="form-control" placeholder="Age in years">
@@ -38,42 +51,49 @@
 $(document).ready(function() {
 	var reasoningIndex = 1
 
-	function populateArray(formId) {
+	function populateJson(formId) {
 		let array = []
 		$(formId + ' .generated').each(function() {
 			array.push({
-				name: $('input[name], select[name]', this).attr('name'),
-				value: $('.value', this).val(),
-				observationDate: $('.observation-date', this).val(),
+				name: $('input[name]', this).attr('name'),
+				negation: $('input[type="checkbox"]', this).prop('checked'),
 			})
 		})
-		return array
+		return {
+			serverUrl: settings.get('fhirServer'),
+			gender: $(formId + ' #gender').val(),
+			minAge: $(formId + ' #min-age').val(),
+			maxAge: $(formId + ' #max-age').val(),
+			minDate: $(formId + ' #min-date').val(),
+			maxDate: $(formId + ' #max-date').val(),
+			properties: array
+		}
 	}
 
 	$('form #submit-button').on('click', function() {
 		$('#phenotype-form #submit-button').addClass('disabled')
 		$('#phenotype-form #submit-button i').addClass('fa-spin')
 
-		let data = JSON.stringify(populateArray('#query-form'))
+		let data = JSON.stringify(populateJson('#query-form'))
 
 		$.ajax({
-			url: `${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/reason`,
+			url: `${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/query`,
 			dataType: 'text',
 			contentType: 'application/json; charset=utf-8',
 			processData: false,
 			type: 'POST',
 			data: data,
 			success: function(result) {
-				showMessage(`Reasoning result ${reasoningIndex++}: ${result}`, 'success');
+				showMessage(`Query result ${reasoningIndex++}: ${result}`, 'success');
 				$.ajax({
-					url: `${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/reason?format=png`,
+					url: `${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/query?format=png`,
 					dataType: 'text',
 					contentType: 'application/json; charset=utf-8',
 					processData: false,
 					type: 'POST',
 					data: data,
 					success: function(png) {
-						require('downloadjs')('data:image/png;base64,' + png, 'reasoner_report.png', 'image/png');
+						require('downloadjs')('data:image/png;base64,' + png, 'query_report.png', 'image/png');
 						$('#phenotype-form #submit-button i').removeClass('fa-spin')
 						$('#phenotype-form #submit-button').removeClass('disabled')
 					},
