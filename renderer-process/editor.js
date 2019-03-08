@@ -84,6 +84,7 @@ function createPhenotypeTree(id, url, withContext) {
 		if ((attributes.type.value === 'null' && drop.hasClass('category'))
 			|| (attributes.type.value !== 'null' && drop.hasClass('phenotype')
 				&& ((drop[0].id === 'reason-form-drop-area' && attributes.isSinglePhenotype.value == 'true')
+					|| (drop[0].id === 'query-form-drop-area')
 					|| (drop[0].id === 'formula' && attributes.isRestricted.value == 'false'
 						&& ['numeric', 'date', 'boolean', 'calculation', 'composite-boolean'].indexOf(attributes.type.value) != -1
 						&& (formulaDatatype == attributes.type.value
@@ -108,20 +109,26 @@ function createPhenotypeTree(id, url, withContext) {
 					+ label
 				+ '</button>')
 		} else if (attributes.type.value !== 'null' && drop.hasClass('phenotype')) {
-			if (drop[0].id === 'reason-form-drop-area' && attributes.isSinglePhenotype.value == 'true') {
-				if (attributes.type.value === 'string' && attributes.isRestricted.value == 'false')
+			if (drop[0].id === 'reason-form-drop-area' && attributes.isSinglePhenotype.value == 'true'
+				|| drop[0].id === 'query-form-drop-area'
+			) {
+				if (drop[0].id === 'query-form-drop-area') {
+					appendQueryFormField(data.element, drop[0]);
+				} else if (attributes.type.value === 'string' && attributes.isRestricted.value == 'false')
 					$.ajax({
 						url: `${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/${attributes.id.value}/restrictions`,
 						dataType: 'text',
 						contentType: 'application/json; charset=utf-8',
 						processData: false,
 						type: 'GET',
-						success: function(options) { appendFormField(data.element, drop[0], JSON.parse(options)); },
+						success: function(options) {
+							appendReasoningFormField(data.element, drop[0], JSON.parse(options));
+						},
 						error: function(result) {
 							showMessage(result.responseText, 'danger', true)
 						}
 					});
-				else appendFormField(data.element, drop[0]);
+				else appendReasoningFormField(data.element, drop[0]);
 			} else if (drop[0].id === 'expression'
 				|| (drop[0].id === 'formula' && attributes.isRestricted.value == "false"
 					&& ['numeric', 'date', 'boolean', 'calculation', 'composite-boolean'].indexOf(attributes.type.value) != -1
@@ -138,7 +145,7 @@ function createPhenotypeTree(id, url, withContext) {
 	});
 }
 
-function appendFormField(element, target, options = null) {
+function appendReasoningFormField(element, target, options = null) {
 	var id         = element.attributes.id.value;
 	var type       = element.attributes.type.value;
 	var inputField = '';
@@ -180,14 +187,49 @@ function appendFormField(element, target, options = null) {
 	}
 	var html
 		= '<div class="form-group row generated">'
-			+ `<label for="${id}" class="col-form-label col-sm-3">${element.text} ${info}</label>`
-			+ '<div class="col-sm-3"><input type="date" class="form-control pt-0 observation-date"></div>'
-			+ '<div class="col-sm-5">'
+			+ `<label for="${id}" class="col-form-label col-3">${element.text} ${info}</label>`
+			+ '<div class="col-3"><input type="date" class="form-control pt-0 observation-date"></div>'
+			+ '<div class="col-5">'
 				+ inputField
 			+ '</div>'
 			+ '<a class="btn btn-danger h-100" href="#" onclick="$(this).parent().remove()">'
 				+ '<i class="fas fa-times fa-lg"></i>'
 			+ '</a>'
+		+ '</div>';
+
+	$(target).append(html);
+	$('.form-control:last').focus();
+}
+
+function appendQueryFormField(element, target, options = null) {
+	var id   = element.attributes.id.value;
+	var icon = $($(element)[0].firstChild)
+	icon.removeClass('jstree-icon')
+	console.log(icon)
+	
+	var info = ''
+	if (element.attributes.descriptionMap && Object.keys(element.attributes.descriptionMap).length > 0) {
+		var infoTitle = ''
+
+		Object.keys(element.attributes.descriptionMap).forEach(lang => {
+			infoTitle += `${lang}: ${element.attributes.descriptionMap[lang]}\n`
+		})
+
+		info = `<i class="fas fa-info-circle" title="${infoTitle}"></i>`
+	}
+	var html
+		= '<div class="form-group row generated">'
+			+ `<label for="${id}" class="col-form-label col font-weight-bold">${icon[0].outerHTML} ${element.text} ${info}</label>`
+			+ '<div class="col-3" title="Enable this switch to negate the phenotype.">'
+				+ `<label for="${id}-negate" class="col-form-label">Negation</label>`
+				+ '<label class="switch col-form-label">'
+					+ `<input type="checkbox" class="danger" name="${id}-negate" id="${id}-negate">`
+					+ '<span class="slider round"></span>'
+				+ '</label>'
+			+ '</div>'
+			+ '<label class="col-form-label col-1 btn btn-danger h-100" href="#" onclick="$(this).parent().remove()">'
+				+ '<i class="fas fa-times fa-lg"></i>'
+			+ '</label>'
 		+ '</div>';
 
 	$(target).append(html);
@@ -276,7 +318,7 @@ function showReasoningForm(id) {
 							descriptionMap: part.descriptionMap
 						}
 					}
-					appendFormField(element, '#reason-form-drop-area', part.selectOptions)
+					appendReasoningFormField(element, '#reason-form-drop-area', part.selectOptions)
 				})
 			})
 		},
