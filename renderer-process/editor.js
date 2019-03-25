@@ -292,7 +292,7 @@ function showPhenotypeForm(id, callback) {
 function transferPhenotypesToTextField(id) {
 	var text = ''
 	$(id).children().each(function() {
-		var firstChild = $(this)[0].firstElementChild
+			text += firstChild.value + ' '
 		if (firstChild && firstChild.localName == 'input') {
 			text += firstChild.value
 		} else {
