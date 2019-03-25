@@ -292,9 +292,9 @@ function showPhenotypeForm(id, callback) {
 function transferPhenotypesToTextField(id) {
 	var text = ''
 	$(id).children().each(function() {
-			text += firstChild.value + ' '
+		var firstChild = $(this)[0].firstElementChild
 		if (firstChild && firstChild.localName == 'input') {
-			text += firstChild.value
+			text += firstChild.value + ' '
 		} else {
 			text += $(this).attr('phenotype-id') + ' '
 		}
