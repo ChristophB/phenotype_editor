@@ -490,19 +490,17 @@ function fillFormula(element, data, part, operators = []) {
 	if (data && data.variables && !data.variables.includes(part)) {
 		if (operators.includes(part.toUpperCase())) {
 			element.append(
-				`<button class="text-capitalize phenotype-item mr-1 mb-1 btn btn-secondary btn-sm" phenotype-id="${part.toUpperCase()}">
+				`<button class="text-capitalize phenotype-item btn btn-secondary btn-sm px-1 mb-0" phenotype-id="${part.toUpperCase()}">
 					${part.toUpperCase()}
 				</button>`
 			)
-		} else if (!part == '' && !isNaN(part)) {
+		} else if (!part == '') {
 			element.append(
-				`<div class="phenotype-item mr-1 mb-1 btn btn-info btn-sm w-25">
+				`<div class="phenotype-item btn btn-info btn-sm w-25 px-0 mb-0">
 					<input type="text" class="w-75" value="${part}">
-					<i class="fas fa-times"></i>
+					<i class="fas fa-times pl-1"></i>
 				</div>`
 			)
-		} else {
-			element.append(part)
 		}
 	}
 
@@ -511,8 +509,8 @@ function fillFormula(element, data, part, operators = []) {
 		var node = nodes[key]
 		if (node.a_attr && node.a_attr.id == part) {
 			element.append(
-				`<button class="text-capitalize phenotype-item mr-1 mb-1 btn btn-default btn-sm" phenotype-id="${node.a_attr.id}">
-					<i class="${node.icon}"></i>${node.text}
+				`<button class="text-capitalize phenotype-item btn btn-default btn-sm px-1 mb-0" phenotype-id="${node.a_attr.id}">
+					<i class="${node.icon} pr-1"></i>${node.text}
 				</button>`
 			)
 			break
@@ -531,7 +529,7 @@ function inspectPhenotype(data) {
 
 			if (data.formula) {
 				data.formula.split(' ').forEach(function(part) {
-					fillFormula($('#formula'), data, part, [ '+', '-', '*', '/', '(', ')' ])
+					fillFormula($('#formula'), data, part, [ '+', '-', '*', '/', '(', ')', ',', 'IF', 'AND', 'OR' ])
 				})
 			}
 
