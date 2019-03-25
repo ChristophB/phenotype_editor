@@ -92,8 +92,7 @@ function createPhenotypeTree(id, url, withContext) {
 					|| (drop[0].id === 'expression')
 				)
 			)
-		)
-		jstreeIcon.removeClass('jstree-er').addClass('jstree-ok');
+		) jstreeIcon.removeClass('jstree-er').addClass('jstree-ok')
 	}).on('dnd_stop.vakata', function (e, data) {
 		var target     = $(data.event.target)
 		var attributes = data.element.attributes
