@@ -529,7 +529,7 @@ function inspectPhenotype(data) {
 
 			if (data.formula) {
 				data.formula.split(' ').forEach(function(part) {
-					fillFormula($('#formula'), data, part, [ '+', '-', '*', '/', '(', ')', ',', 'IF', 'AND', 'OR' ])
+					fillFormula($('#formula'), data, part, [ '+', '-', '*', '/', '(', ')', ',', 'IF_EXC', 'AND', 'OR' ])
 				})
 			}
 
