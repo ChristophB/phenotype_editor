@@ -134,10 +134,12 @@ function createPhenotypeTree(id, url, withContext) {
 					&& (formulaDatatype == attributes.type.value
 						|| (formulaDatatype == 'numeric' && ['numeric', 'calculation', 'composite-boolean'].indexOf(attributes.type.value) != -1)))
 			) {
-				var label = data.element.innerHTML.replace('jstree-icon', '')
+				var icon  = $($(data.element)[0].firstChild).clone()
+				icon.removeClass('jstree-icon')
+
 				drop.append(
 					`<button class="text-capitalize phenotype-item mr-1 mb-1 btn btn-default btn-sm" phenotype-id="${attributes.id.value}">`
-						+ label
+						+ icon[0].outerHTML + ' ' + data.element.text
 					+ '</button>')
 			}
 		}
@@ -524,7 +526,7 @@ function inspectPhenotype(data) {
 			$('#ucum').val(data.unit)
 			$('#datatype').val(getDatatype(data))
 			$('#formula-text').val(data.formula)
-			$('#formula-datatype').val(data.datatypeText)
+			$('#formula-datatype').val(data.datatypeText == 'decimal' ? 'numeric' : data.datatypeText)
 			$('#aggregate-function').val(data.function)
 
 			if (data.formula) {
