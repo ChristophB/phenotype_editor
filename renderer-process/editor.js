@@ -611,6 +611,16 @@ function inspectPhenotype(data) {
 			}
 			counter++;
 		});
+		var counter = 1
+		data.codes.forEach(function(code) {
+			if (counter == 1) {
+				$('#code-div #codes').val(code);
+			} else {
+				addRow('#code-div');
+				$('#code-div input[type=text].generated').last().val(code);
+			}
+			counter++;
+		});
 		addRange(data.phenotypeRange);
 
 		if (data.score != undefined) $('#score').val(data.score);
