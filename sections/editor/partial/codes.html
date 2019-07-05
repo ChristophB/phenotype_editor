@@ -1,0 +1,13 @@
+<div class="form-group row">
+	<div class="col-sm-3">
+		<label for="codes" class="col-form-label">Codes</label>
+		<div class="btn btn-primary btn-sm float-right" onclick="addRow('#code-div')" data-toggle="tooltip" title="Add a code from a coding system" data-placement="right">
+			<i class="fas fa-plus" aria-hidden="true"></i>
+		</div>
+	</div>
+	<div class="col-sm-9" id="code-div">
+		<small class="form-text text-muted text-justify">e.g., http://loinc.org/8302-2 for body height</small>
+		<input type="text" class="form-control" name="codes[]" id="codes">
+		<input type="text" class="form-control d-none" name="codes[]">
+	</div>
+</div>
