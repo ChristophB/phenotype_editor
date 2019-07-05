@@ -7,8 +7,9 @@ $('#refresh-ontology-table-button').click(() => {
 });
 
 function actionButtonCellFormatter(value, row) {
-	return `<a class="btn btn-default" download="${row.id}" href="${settings.get('host')}/phenotype/${row.id}">Download</a>`
-		+ `<button class="btn btn-danger" onclick="deleteOntology('${row.id}')">Delete</button>`
+	return `<a class="btn btn-default" download="${row.id}" href="${settings.get('host')}/phenotype/${row.id}"><i class="fas fa-file-code"></i> Download OWL</a>`
+		+ `<a class="btn btn-default" download="${row.id}" href="${settings.get('host')}/phenotype/${row.id}?format=xls"><i class="fas fa-file-excel"></i> Download OWL</a>`
+		+ `<button class="btn btn-danger" onclick="deleteOntology('${row.id}')"><i class="fas fa-trash-alt"></i> Delete</button>`
 }
 
 function deleteOntology(id) {
