@@ -392,6 +392,14 @@ function customMenu(node) {
 			icon: 'far fa-file-alt',
 			action: () => downloadDesicionTree(node.a_attr.id, node.text, 'graphml')
 		},
+		importArtDecor: {
+			label: 'Import from Art-Decor',
+			icon: 'fas fa-file-import',
+			action: function() {
+				$('#importArtDecorModal').modal('show')
+				$('#importArtDecorModal #categoryId').val(node.a_attr.id)
+			}
+		},
 		delete: {
 			label: 'Delete',
 			icon: 'far fa-trash-alt text-danger',
@@ -416,6 +424,7 @@ function customMenu(node) {
 		delete items.getDecisionTreePng
 		delete items.showReasoningForm
 	} else {
+		delete items.importArtDecor
 		delete items.showCategoryForm
 		delete items.showAbstractPhenotypeForm
 	}
@@ -459,6 +468,26 @@ function deletePhenotypes() {
 		},
 		error: function(result) {
 			$('#deletePhenotypeModal').modal('hide');
+			showMessage(result.responseText, 'danger', true);
+		}
+	});
+}
+
+function importArtDecor(categoryId, dataSetId) {
+	$.ajax({
+		url: `${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/import-art-decor`,
+		dataType: 'text',
+		contentType: 'application/json',
+		processData: false,
+		type: 'POST',
+		data: { dataSetId: dataSetId, categoryId: categoryId },
+		success: function(result) {
+			$('#phenotype-tree').jstree('refresh');
+			$('#importArtDecorModal').modal('hide');
+			showMessage(result, 'success', true);
+		},
+		error: function(result) {
+			$('#importArtDecorModal').modal('hide');
 			showMessage(result.responseText, 'danger', true);
 		}
 	});
@@ -612,15 +641,17 @@ function inspectPhenotype(data) {
 			counter++;
 		});
 		var counter = 1
-		data.codes.forEach(function(code) {
-			if (counter == 1) {
-				$('#code-div #codes').val(code);
-			} else {
-				addRow('#code-div');
-				$('#code-div input[type=text].generated').last().val(code);
-			}
-			counter++;
-		});
+		if (data.codes) {
+			data.codes.forEach(function(code) {
+				if (counter == 1) {
+					$('#code-div #codes').val(code);
+				} else {
+					addRow('#code-div');
+					$('#code-div input[type=text].generated').last().val(code);
+				}
+				counter++;
+			});
+		}
 		addRange(data.phenotypeRange);
 
 		if (data.score != undefined) $('#score').val(data.score);
