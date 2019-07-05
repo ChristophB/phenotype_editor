@@ -15,7 +15,9 @@
 					<input type="hidden" id="categoryId">
 					<input type="text" id="artDecorId" class="form-control" required>
 					<br>
-					<input type="submit" class="btn btn-primary" onclick="importArtDecor($('#importArtDecorModal #categoryId').val(), $('#artDecorId').val())">
+					<button class="btn btn-primary" id="importArtDecorSubmitBtn" onclick="importArtDecor($('#importArtDecorModal #categoryId').val(), $('#artDecorId').val())">
+						Import
+					</button>
 				</form>
 			</div>
 		</div>

@@ -474,19 +474,29 @@ function deletePhenotypes() {
 }
 
 function importArtDecor(categoryId, dataSetId) {
+	var button = $('#importArtDecorSubmitBtn')[0]
+	button.disabled = true
+	button.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i>'
+
 	$.ajax({
 		url: `${settings.get('host')}/phenotype/${settings.get('activeOntologyId')}/import-art-decor`,
 		dataType: 'text',
 		contentType: 'application/json',
 		processData: false,
 		type: 'POST',
-		data: { dataSetId: dataSetId, categoryId: categoryId },
+		data: JSON.stringify({ dataSetId: dataSetId, categoryId: categoryId }),
 		success: function(result) {
+			var button = $('#importArtDecorSubmitBtn')[0]
+			button.disabled = false
+			button.innerHTML = 'Import'
 			$('#phenotype-tree').jstree('refresh');
 			$('#importArtDecorModal').modal('hide');
 			showMessage(result, 'success', true);
 		},
 		error: function(result) {
+			var button = $('#importArtDecorSubmitBtn')[0]
+			button.disabled = false
+			button.innerHTML = 'Import'
 			$('#importArtDecorModal').modal('hide');
 			showMessage(result.responseText, 'danger', true);
 		}
