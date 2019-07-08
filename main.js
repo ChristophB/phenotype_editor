@@ -24,7 +24,10 @@ function initialize() {
 			minWidth: 1200, minHeight: 900,
 			title: app.getName(),
 			frame: false,
-			icon: path.join(__dirname, 'assets/icons/png/64x64.png')
+			icon: path.join(__dirname, 'assets/icons/png/64x64.png'),
+			webPreferences: {
+				nodeIntegration: true
+			}
 		})
 
 		mainWindow.loadURL(path.join('file://', __dirname, '/index.html'))
