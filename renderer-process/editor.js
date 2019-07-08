@@ -626,6 +626,7 @@ function inspectPhenotype(data) {
 				counter++
 			});
 		}
+
 		var counter = 1;
 		for (var lang in data.descriptions) {
 			data.descriptions[lang].forEach(function(description) {
@@ -640,6 +641,7 @@ function inspectPhenotype(data) {
 			});
 			counter++;
 		}
+
 		var counter = 1
 		data.relatedConcepts.forEach(function(relation) {
 			if (counter == 1) {
@@ -650,17 +652,22 @@ function inspectPhenotype(data) {
 			}
 			counter++;
 		});
+
 		var counter = 1
 		if (data.codes) {
-			data.codes.forEach(function(code) {
-				if (counter == 1) {
-					$('#code-div #codes').val(code);
-				} else {
-					addRow('#code-div');
-					$('#code-div input[type=text].generated').last().val(code);
-				}
+			for (var codeSystem in data.codes) {
+				data.codes[codeSystem].forEach(function(code) {
+					if (counter == 1) {
+						$('#description-div input[name="codeSystems[]"]').first().val(codeSystem)
+						$('#description-div input[name="codes[]"]').first().val(code)
+					} else {
+						addRow('#code-div');
+						$('#code-div .generated').last().find('input[name="codeSystems[]"]').val(codeSystem);
+						$('#code-div .generated').last().find('input[name="codes[]"]').val(code);
+					}
+				});
 				counter++;
-			});
+			}
 		}
 		addRange(data.phenotypeRange);
 

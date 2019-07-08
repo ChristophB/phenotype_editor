@@ -6,8 +6,30 @@
 		</div>
 	</div>
 	<div class="col-sm-9" id="code-div">
-		<small class="form-text text-muted text-justify">e.g., http://loinc.org/8302-2 for body height</small>
-		<input type="text" class="form-control" name="codes[]" id="codes">
-		<input type="text" class="form-control d-none" name="codes[]">
+		<small class="form-text text-muted text-justify">e.g., Code System: <i>http://loinc.org</i> and Code: <i>8302-2</i> for body height</small>
+
+		<div class="input-group">
+			<div class="input-group-addon text-muted">
+					Code System:
+			</div>
+			<input type="text" class="form-control" name="codeSystems[]" id="codeSystems">
+
+			<div class="input-group-addon text-muted">
+				Code:
+			</div>
+			<input type="text" class="form-control" name="codes[]" id="codes">
+		</div>
+
+		<div class="input-group d-none">
+			<div class="input-group-addon text-muted">
+					Code System:
+			</div>
+			<input type="text" class="form-control" name="codeSystems[]" id="codeSystems">
+
+			<div class="input-group-addon text-muted">
+				Code:
+			</div>
+			<input type="text" class="form-control" name="codes[]" id="codes">
+		</div>
 	</div>
 </div>
