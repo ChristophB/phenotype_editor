@@ -27,7 +27,7 @@ function checkIfExists(id) {
 }
 
 function toggleValueDefinition() {
-	$('#ucum-form-group, #aggregate-function-form-group, #formula-form-group, #formula-datatype-form-group').addClass('d-none')
+	$('#ucum-form-group, #aggregate-function-form-group, #formula-form-group, #formula-datatype-form-group, #is-main-result-form-group').addClass('d-none')
 	var datatype = $('#datatype').val()
 	
 	if (datatype == 'numeric')
@@ -35,7 +35,9 @@ function toggleValueDefinition() {
 	if (datatype == 'numeric' || datatype == 'calculation')
 		$('#ucum-form-group').removeClass('d-none')
 	if (datatype == 'calculation')
-		$('#formula-form-group, #formula-datatype-form-group').removeClass('d-none')
+		$('#formula-form-group, #formula-datatype-form-group, #is-main-result-form-group').removeClass('d-none')
+	if (datatype == 'composite-boolean')
+		$('#is-main-result-form-group').removeClass('d-none')
 }
 
 function addRow(id) {
@@ -357,7 +359,10 @@ function customMenu(node) {
 			label: 'Create Phenotype',
 			icon: 'fas fa-plus text-primary',
 			action: function() {
-				showPhenotypeForm('#abstract-phenotype-form', () =>	fillFormula($('#super-category'), null, node.a_attr.id))
+				showPhenotypeForm('#abstract-phenotype-form', () => {
+					fillFormula($('#super-category'), null, node.a_attr.id)
+					$('#is-main-result-form-group').addClass('d-none')
+				})
 			}
 		},
 		showRestrictedPhenotypeForm: {
@@ -588,6 +593,10 @@ function inspectPhenotype(data) {
 		$('#identifier').val(data.name)
 		$('#main-title').val(data.mainTitle.titleText)
 
+		if (data.mainResult) {
+			$('#is-main-result').prop('checked', true)
+		}
+
 		var counter = 1;
 		for (var lang in data.titles) {
 			var title = data.titles[lang];
@@ -654,16 +663,16 @@ function inspectPhenotype(data) {
 		});
 
 		var counter = 1
-		if (data.codes) {
-			for (var codeSystem in data.codes) {
-				data.codes[codeSystem].forEach(function(code) {
+		if (data.codeSystems) {
+			for (var codeSystem in data.codeSystems) {
+				data.codeSystems[codeSystem].codes.forEach(function(code) {
 					if (counter == 1) {
-						$('#description-div input[name="codeSystems[]"]').first().val(codeSystem)
-						$('#description-div input[name="codes[]"]').first().val(code)
+						$('#code-div input[name="codeSystems[]"]').first().val(data.codeSystems[codeSystem].id)
+						$('#code-div input[name="codes[]"]').first().val(code.name)
 					} else {
 						addRow('#code-div');
-						$('#code-div .generated').last().find('input[name="codeSystems[]"]').val(codeSystem);
-						$('#code-div .generated').last().find('input[name="codes[]"]').val(code);
+						$('#code-div .generated').last().find('input[name="codeSystems[]"]').val(data.codeSystems[codeSystem].id);
+						$('#code-div .generated').last().find('input[name="codes[]"]').val(code.name);
 					}
 				});
 				counter++;
