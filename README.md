@@ -1,5 +1,7 @@
 # Phenotype Editor
 
+## The Phenotype Editor is no longer updated in favor of [PhenoMan-Editor](https://github.com/Onto-Med/PhenoMan-Editor). This repository remains on GitHub for archiving purposes.
+
 This application enables the user to connect with an **Ontology Service** and to build phenotype ontologies.
 
 ## How To Use
